@@ -6,3 +6,8 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+.unsplash-selector .prompt .prompt-results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
