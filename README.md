@@ -5,6 +5,8 @@ This plugin helps users easily search and insert images to editors from [Unsplas
 
 # Usage
 
+[demo.webm](https://user-images.githubusercontent.com/5436425/187962730-8d689c39-cec8-40f5-87af-be00d67d2243.webm)
+
 When editing a note and want to insert an image from Unsplash:
 1. Open command palette (⌘+P / Ctrl+P).
 2. Search the command "Image Inserter: Insert Unsplash Image".
@@ -18,7 +20,7 @@ Tip: You can also set a hotkey for the "Image Inserter: Insert Unsplash Image" c
 
 # Installation
 
-###Manually installing the plugin
+### Manually installing the plugin
 
 Copy over main.js, styles.css, manifest.json to your vault VaultFolder/.obsidian/plugins/obsidian-image-inserter/.
 
