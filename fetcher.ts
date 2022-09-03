@@ -14,7 +14,9 @@ export function getFetcher() {
     async searchImages(query: string, orientation: string): Promise<Image[]> {
       const url = new URL("/search/photos", "https://insert-unsplash-image.cloudy9101.com/")
       url.searchParams.set("query", query)
-      url.searchParams.set("orientation", orientation)
+      if (orientation != 'not_specified') {
+        url.searchParams.set("orientation", orientation)
+      }
       url.searchParams.set("per_page", "9")
       const res = await fetch(url)
       const data: Unsplash.RootObject = await res.json()
