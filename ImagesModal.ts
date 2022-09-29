@@ -1,4 +1,4 @@
-import { App, Editor, SuggestModal } from "obsidian"
+import { App, Editor, Notice, SuggestModal } from "obsidian"
 import { getFetcher, Image } from "fetcher"
 import { InsertMode, Orientation } from "SettingTab"
 
@@ -33,16 +33,25 @@ export class ImagesModal extends SuggestModal<Image> {
       if (this.timer) clearTimeout(this.timer)
 
       this.timer = setTimeout(async () => {
-        const res = await this.fetcher.searchImages(query, this.settings.orientation)
-        resolve(res)
+        try {
+          const res = await this.fetcher.searchImages(query, this.settings.orientation)
+          resolve(res)
+        } catch {
+          new Notice('Something went wrong, please contact the plugin author.');
+          resolve([])
+        }
       }, 500)
     })
   }
 
   onChooseSuggestion(item: Image) {
-    this.fetcher.touchDownloadLocation(item.downloadLocationUrl)
-    const url = item.url
-    this.editor.replaceSelection(`![${item.desc.slice(0, 10)}](${url})\n*Photo by [${item.author.name}](https://unsplash.com/@${item.author.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`)
+    try {
+      this.fetcher.touchDownloadLocation(item.downloadLocationUrl)
+      const url = item.url
+      this.editor.replaceSelection(`![${item.desc.slice(0, 10)}](${url})\n*Photo by [${item.author.name}](https://unsplash.com/@${item.author.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`)
+    } catch {
+      new Notice('Something went wrong, please contact the plugin author.');
+    }
   }
 
   renderSuggestion(value: Image, el: HTMLElement) {
