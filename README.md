@@ -22,7 +22,7 @@ Tip: You can also set a hotkey for the "Image Inserter: Insert Unsplash Image" c
 
 ### Manually installing the plugin
 
-Copy over main.js, styles.css, manifest.json to your vault VaultFolder/.obsidian/plugins/obsidian-image-inserter/.
+Copy over main.js, styles.css, manifest.json to your vault VaultFolder/.obsidian/plugins/insert-unsplash-image/.
 
 ### From the Community Plugins list
 Search for "Image Inserter" in Obsidian's community plugins browser.

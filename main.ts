@@ -21,7 +21,7 @@ export default class InsertUnsplashImage extends Plugin {
     this.addSettingTab(new SettingTab(this.app, this));
 
 		this.addCommand({
-			id: 'image-inserter-plugin',
+			id: 'insert',
 			name: 'Insert Unsplash Image',
 			editorCallback: (editor: Editor) => {
         new ImagesModal(this.app, editor, this.settings).open();
