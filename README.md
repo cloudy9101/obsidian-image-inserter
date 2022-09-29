@@ -28,6 +28,11 @@ Copy over main.js, styles.css, manifest.json to your vault VaultFolder/.obsidian
 Search for "Image Inserter" in Obsidian's community plugins browser.
 Enable the plugin in your Obsidian settings (find "Image Inserter" under "Community plugins").
 
+# Notes
+
+Between your editor and Unsplash API, there is an HTTP proxy that runs on my own server. This means all your search input will send to my own server first. Please don't use this plugin if you can't accept it.
+The proxy server is necessary because Unsplash API requires a client ID when fetching data from it and Unsplash requires the developer to keep it secret.
+
 # Development
 
 Clone the repository, run `npm install` to install the dependencies, and run `npm run dev` to compile the plugin and watch file changes.
