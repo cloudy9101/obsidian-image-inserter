@@ -1,3 +1,5 @@
+import { requestUrl } from 'obsidian'
+
 export interface Image {
   desc: string
   thumb: string
@@ -18,8 +20,8 @@ export function getFetcher() {
         url.searchParams.set("orientation", orientation)
       }
       url.searchParams.set("per_page", "9")
-      const res = await fetch(url)
-      const data: Unsplash.RootObject = await res.json()
+      const res = await requestUrl({ url: url.toString() })
+      const data: Unsplash.RootObject = res.json
       return data.results.map(function(item) {
         return {
           desc: item.description || item.alt_description,
@@ -34,7 +36,7 @@ export function getFetcher() {
       })
     },
     async touchDownloadLocation(url: string): Promise<void> {
-      await fetch(url.replace("api.unsplash.com", "insert-unsplash-image.cloudy9101.com"))
+      await requestUrl({ url: url.replace("api.unsplash.com", "insert-unsplash-image.cloudy9101.com") })
     }
   }
 }
