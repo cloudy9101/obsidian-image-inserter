@@ -1,17 +1,7 @@
 import { Editor, Plugin } from 'obsidian';
 
 import { ImagesModal } from 'ImagesModal';
-import { SettingTab, InsertMode, Orientation } from 'SettingTab';
-
-interface PluginSettings {
-  insertMode: InsertMode
-  orientation: Orientation
-}
-
-const DEFAULT_SETTINGS = {
-  insertMode: InsertMode.remote,
-  orientation: Orientation.landscape,
-}
+import { SettingTab, PluginSettings, DEFAULT_SETTINGS } from 'SettingTab';
 
 export default class InsertUnsplashImage extends Plugin {
 	settings: PluginSettings;

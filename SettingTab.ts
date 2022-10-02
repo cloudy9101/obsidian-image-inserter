@@ -13,6 +13,17 @@ export enum Orientation {
   squarish = 'squarish',
 }
 
+export interface PluginSettings {
+  insertMode: InsertMode
+  orientation: Orientation
+  insertSize: string
+}
+
+export const DEFAULT_SETTINGS = {
+  insertMode: InsertMode.remote,
+  orientation: Orientation.landscape,
+  insertSize: "",
+}
 
 export class SettingTab extends PluginSettingTab {
   plugin: InsertUpsplashImagePlugin;
@@ -63,5 +74,17 @@ export class SettingTab extends PluginSettingTab {
             }
           })
       );
+
+    new Setting(containerEl)
+      .setName("Insert Size")
+      .setDesc("Set the size of the image when inserting. Format could be only width \"200\" or width and height \"200x100\".")
+      .addText((text) => {
+        text
+          .setValue(this.plugin.settings.insertSize)
+          .onChange(async (value) => {
+            this.plugin.settings.insertSize = value
+            await this.plugin.saveSettings()
+        })
+      })
   }
 }

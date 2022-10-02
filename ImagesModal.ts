@@ -1,6 +1,6 @@
 import { App, Editor, Notice, SuggestModal } from "obsidian"
 import { getFetcher, Image } from "fetcher"
-import { InsertMode, Orientation } from "SettingTab"
+import { Orientation, PluginSettings } from "SettingTab"
 
 const APP_NAME = encodeURIComponent("Obsidian Image Inserter Plugin")
 const UTM = `utm_source=${APP_NAME}&utm_medium=referral`
@@ -12,15 +12,9 @@ export class ImagesModal extends SuggestModal<Image> {
   }
   editor: Editor
   timer: ReturnType<typeof setTimeout>
-  settings: {
-    insertMode: InsertMode,
-    orientation: Orientation,
-  }
+  settings: PluginSettings
 
-  constructor(app: App, editor: Editor, settings: {
-    insertMode: InsertMode,
-    orientation: Orientation,
-  }) {
+  constructor(app: App, editor: Editor, settings: PluginSettings) {
     super(app)
     this.containerEl.addClass("unsplash-selector")
     this.fetcher = getFetcher()
@@ -48,7 +42,8 @@ export class ImagesModal extends SuggestModal<Image> {
     try {
       this.fetcher.touchDownloadLocation(item.downloadLocationUrl)
       const url = item.url
-      this.editor.replaceSelection(`![${item.desc.slice(0, 10)}](${url})\n*Photo by [${item.author.name}](https://unsplash.com/@${item.author.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`)
+      const imageSize = this.settings.insertSize === "" ? "" : `|${this.settings.insertSize}`
+      this.editor.replaceSelection(`![${item.desc.slice(0, 10)}${imageSize}](${url})\n*Photo by [${item.author.name}](https://unsplash.com/@${item.author.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`)
     } catch {
       new Notice('Something went wrong, please contact the plugin author.');
     }
