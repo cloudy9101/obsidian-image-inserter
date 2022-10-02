@@ -1,6 +1,6 @@
-import { App, Editor, Notice, SuggestModal } from "obsidian"
+import { App, Editor, Notice, SuggestModal, moment } from "obsidian"
 import { getFetcher, Image } from "fetcher"
-import { Orientation, PluginSettings } from "SettingTab"
+import { InsertMode, Orientation, PluginSettings } from "SettingTab"
 
 const APP_NAME = encodeURIComponent("Obsidian Image Inserter Plugin")
 const UTM = `utm_source=${APP_NAME}&utm_medium=referral`
@@ -9,6 +9,7 @@ export class ImagesModal extends SuggestModal<Image> {
   fetcher: {
     searchImages: (query: string, orientation: Orientation) => Promise<Image[]>,
     touchDownloadLocation: (url: string) => Promise<void>,
+    downloadImage: (url: string) => Promise<ArrayBuffer>,
   }
   editor: Editor
   timer: ReturnType<typeof setTimeout>
@@ -38,13 +39,29 @@ export class ImagesModal extends SuggestModal<Image> {
     })
   }
 
-  onChooseSuggestion(item: Image) {
+  async onChooseSuggestion(item: Image) {
     try {
       this.fetcher.touchDownloadLocation(item.downloadLocationUrl)
       const url = item.url
+
       const imageSize = this.settings.insertSize === "" ? "" : `|${this.settings.insertSize}`
-      this.editor.replaceSelection(`![${item.desc.slice(0, 10)}${imageSize}](${url})\n*Photo by [${item.author.name}](https://unsplash.com/@${item.author.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`)
-    } catch {
+      let nameText = `![${item.desc.slice(0, 10)}${imageSize}]`
+      let urlText = `(${url})`
+      const referral = `\n*Photo by [${item.author.name}](https://unsplash.com/@${item.author.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
+
+      if (this.settings.insertMode === InsertMode.local) {
+        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}.png`
+        const arrayBuf = await this.fetcher.downloadImage(url)
+        // eslint-disable-next-line
+        this.app.vault.createBinary(`${(this.app.vault as any).config.attachmentFolderPath}/${imageName}`, arrayBuf)
+        nameText = `![[${imageName}${imageSize}]]`
+        urlText = ""
+      }
+
+      const imageTag = `${nameText}${urlText}${referral}`
+      this.editor.replaceSelection(imageTag)
+    } catch (e) {
+      console.error(e)
       new Notice('Something went wrong, please contact the plugin author.');
     }
   }

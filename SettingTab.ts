@@ -38,21 +38,21 @@ export class SettingTab extends PluginSettingTab {
 
     containerEl.empty();
 
-    // new Setting(containerEl)
-    //   .setName("Insert Mode")
-    //   .setDesc("Should the image be insert remotely(with Unsplash url) or locally(download into attachments folder).")
-    //   .addDropdown((dropdown) =>
-    //     dropdown
-    //       .addOption(InsertMode.remote, 'Remote')
-    //       .addOption(InsertMode.local, 'Local')
-    //       .setValue(this.plugin.settings.insertMode)
-    //       .onChange(async (value) => {
-    //         if (value === InsertMode.remote || value === InsertMode.local) {
-    //           this.plugin.settings.insertMode = value;
-    //           await this.plugin.saveSettings();
-    //         }
-    //       })
-    //   );
+    new Setting(containerEl)
+      .setName("Insert Mode")
+      .setDesc("Should the image be insert remotely(with Unsplash url) or locally(download into attachments folder).")
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption(InsertMode.remote, 'Remote')
+          .addOption(InsertMode.local, 'Local')
+          .setValue(this.plugin.settings.insertMode)
+          .onChange(async (value) => {
+            if (value === InsertMode.remote || value === InsertMode.local) {
+              this.plugin.settings.insertMode = value;
+              await this.plugin.saveSettings();
+            }
+          })
+      );
 
     new Setting(containerEl)
       .setName("Orientation")

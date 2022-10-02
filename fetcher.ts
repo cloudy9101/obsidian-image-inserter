@@ -37,6 +37,10 @@ export function getFetcher() {
     },
     async touchDownloadLocation(url: string): Promise<void> {
       await requestUrl({ url: url.replace("api.unsplash.com", "insert-unsplash-image.cloudy9101.com") })
+    },
+    async downloadImage(url: string): Promise<ArrayBuffer> {
+      const res = await requestUrl({ url })
+      return res.arrayBuffer
     }
   }
 }
