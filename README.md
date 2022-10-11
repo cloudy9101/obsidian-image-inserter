@@ -3,9 +3,16 @@
 This plugin helps users easily search and insert images to editors from [Unsplash](https://unsplash.com).
 *Unsplash provides over 3 million free high-resolution images.*
 
+# Features
+
+- Search images from Unsplash (Will support more sources in the future)
+- Insert image locally (download it into your resource folder), or remotely (just insert the image url)
+- Set default image size, support only width or width and height
+- Set preferred image orientation when searching
+
 # Usage
 
-[demo.webm](https://user-images.githubusercontent.com/5436425/187962730-8d689c39-cec8-40f5-87af-be00d67d2243.webm)
+[demo.webm](https://user-images.githubusercontent.com/5436425/194984473-506249c2-b3ed-4c3d-835b-494f43c7684a.webm)
 
 When editing a note and want to insert an image from Unsplash:
 1. Open command palette (⌘+P / Ctrl+P).
