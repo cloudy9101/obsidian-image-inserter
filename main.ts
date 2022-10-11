@@ -1,7 +1,7 @@
 import { Editor, Plugin } from 'obsidian';
 
-import { ImagesModal } from 'ImagesModal';
-import { SettingTab, PluginSettings, DEFAULT_SETTINGS } from 'SettingTab';
+import { SettingTab, PluginSettings, DEFAULT_SETTINGS } from './SettingTab';
+import { ModalWrapper } from './ModalWrapper';
 
 export default class InsertUnsplashImage extends Plugin {
 	settings: PluginSettings;
@@ -14,7 +14,7 @@ export default class InsertUnsplashImage extends Plugin {
 			id: 'insert',
 			name: 'Insert Unsplash Image',
 			editorCallback: (editor: Editor) => {
-        new ImagesModal(this.app, editor, this.settings).open();
+        new ModalWrapper(this.app, editor, this.settings).open();
 			}
 		});
 	}
