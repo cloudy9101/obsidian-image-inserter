@@ -76,7 +76,7 @@ declare namespace Unsplash {
   export interface RootObject {
     results: Photo[];
     total: number;
-    total_page: number;
+    total_pages: number;
   }
 
 }
