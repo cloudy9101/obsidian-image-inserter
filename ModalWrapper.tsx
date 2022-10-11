@@ -22,7 +22,7 @@ export class ModalWrapper extends Modal {
     const { contentEl } = this
 
     const root = createRoot(contentEl)
-    root.render(<ImagesModal fetcher={this.fetcher} onSelect={this.onChooseSuggestion.bind(this)} />)
+    root.render(<React.StrictMode><ImagesModal fetcher={this.fetcher} onSelect={this.onChooseSuggestion.bind(this)} /></React.StrictMode>)
   }
 
   onClose() {

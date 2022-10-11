@@ -1,3 +1,4 @@
+import * as React from "react";
 import { getFetcher, Image } from 'fetcher'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 
