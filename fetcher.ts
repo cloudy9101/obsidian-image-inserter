@@ -68,7 +68,7 @@ export function getFetcher(settings: PluginSettings) {
       const res = await requestUrl({ url })
       return res.arrayBuffer
     },
-    async downloadAndInsertImage(image: Image, createFile: (name: string, binary: ArrayBuffer) => void): Promise<string> {
+    async downloadAndInsertImage(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<string> {
       this.touchDownloadLocation(image.downloadLocationUrl)
       const url = image.url
 
@@ -78,10 +78,11 @@ export function getFetcher(settings: PluginSettings) {
       const referral = `\n*Photo by [${image.author.name}](https://unsplash.com/@${image.author.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
 
       if (insertMode === InsertMode.local) {
-        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}.png`
+        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
+        const ext = "png"
         const arrayBuf = await this.downloadImage(url)
-        createFile(imageName, arrayBuf)
-        nameText = `![[${imageName}${imageSize}]]`
+        createFile(imageName, ext, arrayBuf)
+        nameText = `![[${imageName}.${ext}${imageSize}]]`
         urlText = ""
       }
 

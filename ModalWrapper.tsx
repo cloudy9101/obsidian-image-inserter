@@ -1,4 +1,4 @@
-import { App, Editor, Notice, Modal } from "obsidian"
+import { App, Editor, Notice, Modal, FileView } from "obsidian"
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client"
@@ -18,7 +18,7 @@ export class ModalWrapper extends Modal {
     this.containerEl.addClass("image-inserter-container")
   }
 
-  onOpen() {
+  async onOpen() {
     const { contentEl } = this
 
     const root = createRoot(contentEl)
@@ -31,8 +31,14 @@ export class ModalWrapper extends Modal {
     containerEl.empty()
   }
 
-  createFile(name: string, binary: ArrayBuffer) {
-    this.app.vault.createBinary(`${(this.app.vault as any).config.attachmentFolderPath}/${name}`, binary)
+  async createFile(name: string, ext: string, binary: ArrayBuffer) {
+    const file = this.app.workspace.getActiveFile()
+    if (file === null) {
+      throw "No active file"
+    }
+    const filePath = await this.app.vault.getAvailablePathForAttachments(name, ext, file)
+
+    this.app.vault.createBinary(filePath, binary)
   }
 
   async onChooseSuggestion(item: Image) {
