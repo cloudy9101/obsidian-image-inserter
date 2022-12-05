@@ -1,5 +1,8 @@
 import { requestUrl, moment } from 'obsidian'
 import { InsertMode, PluginSettings } from 'SettingTab'
+import { validUrl } from 'utils'
+
+const DEFAULT_PROXY_SERVER = "https://insert-unsplash-image.cloudy9101.com/"
 
 export interface Image {
   desc: string
@@ -23,6 +26,11 @@ export function getFetcher(settings: PluginSettings) {
 
   const { orientation, insertMode, insertSize } = settings
 
+  let proxyServer = DEFAULT_PROXY_SERVER
+  if (validUrl(settings.proxyServer)) {
+    proxyServer = settings.proxyServer
+  }
+
   return {
     noResult() { return totalPage <= 0 },
     hasPrevPage() {
@@ -38,7 +46,7 @@ export function getFetcher(settings: PluginSettings) {
       this.hasNextPage() && (curPage += 1)
     },
     async searchImages(query: string): Promise<Image[]> {
-      const url = new URL("/search/photos", "https://insert-unsplash-image.cloudy9101.com/")
+      const url = new URL("/search/photos", proxyServer)
       url.searchParams.set("query", query)
       if (orientation != 'not_specified') {
         url.searchParams.set("orientation", orientation)
@@ -62,7 +70,7 @@ export function getFetcher(settings: PluginSettings) {
       })
     },
     async touchDownloadLocation(url: string): Promise<void> {
-      await requestUrl({ url: url.replace("api.unsplash.com", "insert-unsplash-image.cloudy9101.com") })
+      await requestUrl({ url: url.replace("api.unsplash.com", proxyServer) })
     },
     async downloadImage(url: string): Promise<ArrayBuffer> {
       const res = await requestUrl({ url })

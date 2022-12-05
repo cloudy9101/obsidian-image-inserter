@@ -1,6 +1,7 @@
 import * as React from "react";
 import { getFetcher, Image } from 'fetcher'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { Notice } from "obsidian";
 
 import { debounce } from './utils'
 import Loading from "./Loading"
@@ -16,9 +17,14 @@ const ImagesModal = ({ fetcher, onSelect }: { fetcher: ReturnType<typeof getFetc
   const [loading, setLoading] = useState(false)
 
   const fetchImages = async (query: string) => {
-    const images = await fetcher.searchImages(query)
-    setImages(images)
-    setSelectedImage(0)
+    try {
+      const images = await fetcher.searchImages(query)
+      setImages(images)
+      setSelectedImage(0)
+    } catch (e) {
+      console.error(e)
+      new Notice('Something went wrong, please contact the plugin author.')
+    }
     setLoading(false)
   }
 

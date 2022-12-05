@@ -10,3 +10,10 @@ export function debounce(fn: (query: string) => Promise<void>, delay: number): (
   };
 }
 
+export function validUrl(url: string) {
+  try { 
+    return Boolean(new URL(url)); 
+  } catch(e){ 
+    return false; 
+  }
+}

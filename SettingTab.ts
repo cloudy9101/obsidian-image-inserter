@@ -17,12 +17,14 @@ export interface PluginSettings {
   insertMode: InsertMode
   orientation: Orientation
   insertSize: string
+  proxyServer: string
 }
 
 export const DEFAULT_SETTINGS = {
   insertMode: InsertMode.remote,
   orientation: Orientation.landscape,
   insertSize: "",
+  proxyServer: ""
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -83,6 +85,19 @@ export class SettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.insertSize)
           .onChange(async (value) => {
             this.plugin.settings.insertSize = value
+            await this.plugin.saveSettings()
+        })
+      })
+
+    new Setting(containerEl)
+      .setName("Proxy Server")
+      .setDesc("Use a self host proxy server. Leave it empty if you don't want host proxy server by yourself.")
+      .addText((text) => {
+        text
+          .setPlaceholder("https://self-host-proxy.com/")
+          .setValue(this.plugin.settings.proxyServer)
+          .onChange(async (value) => {
+            this.plugin.settings.proxyServer = value
             await this.plugin.saveSettings()
         })
       })

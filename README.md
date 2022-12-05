@@ -40,6 +40,11 @@ Enable the plugin in your Obsidian settings (find "Image Inserter" under "Commun
 Between your editor and Unsplash API, there is an HTTP proxy that runs on my own server. This means all your search input will send to my own server first. Please don't use this plugin if you can't accept it.
 The proxy server is necessary because Unsplash API requires a client ID when fetching data from it and Unsplash requires the developer to keep it secret.
 
+### Self host proxy
+
+If you want to host the proxy server by yourself, please refer to the [proxy repo](https://github.com/cloudy9101/obsidian-image-inserter-proxy).
+After setup the proxy server, you can set the proxy server address on the plugin's settings tab.
+
 # Development
 
 Clone the repository, run `npm install` to install the dependencies, and run `npm run dev` to compile the plugin and watch file changes.
