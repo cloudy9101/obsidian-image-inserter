@@ -95,6 +95,20 @@ export function getFetcher(settings: PluginSettings) {
       }
 
       return `${nameText}${urlText}${referral}`
+    },
+    async downloadAndGetUri(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<string> {
+      this.touchDownloadLocation(image.downloadLocationUrl)
+      const url = image.url
+
+      if (insertMode === InsertMode.local) {
+        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
+        const ext = "png"
+        const arrayBuf = await this.downloadImage(url)
+        createFile(imageName, ext, arrayBuf)
+        return `${imageName}.${ext}`
+      }
+
+      return url
     }
   }
 }

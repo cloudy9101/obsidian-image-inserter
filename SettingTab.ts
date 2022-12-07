@@ -18,13 +18,21 @@ export interface PluginSettings {
   orientation: Orientation
   insertSize: string
   proxyServer: string
+  frontmatter: {
+    key: string
+    valueFormat: string
+  }
 }
 
 export const DEFAULT_SETTINGS = {
   insertMode: InsertMode.remote,
   orientation: Orientation.landscape,
   insertSize: "",
-  proxyServer: ""
+  proxyServer: "",
+  frontmatter: {
+    key: "image",
+    valueFormat: "{image-url}"
+  }
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -98,6 +106,32 @@ export class SettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.proxyServer)
           .onChange(async (value) => {
             this.plugin.settings.proxyServer = value
+            await this.plugin.saveSettings()
+        })
+      })
+    
+    new Setting(containerEl)
+      .setName("Insert to Frontmatter Key")
+      .setDesc("The key used when insert to frontmatter.")
+      .addText((text) => {
+        text
+          .setPlaceholder("image")
+          .setValue(this.plugin.settings.frontmatter.key)
+          .onChange(async (value) => {
+            this.plugin.settings.frontmatter.key = value
+            await this.plugin.saveSettings()
+        })
+      })
+
+    new Setting(containerEl)
+      .setName("Insert to Frontmatter Value Format")
+      .setDesc("The value format used when insert to frontmatter. {image-url} will be replaced by the image url. Please visit https://github.com/cloudy9101/obsidian-image-inserter#frontmatter-value-format for more details.")
+      .addText((text) => {
+        text
+          .setPlaceholder("{image-url}")
+          .setValue(this.plugin.settings.frontmatter.valueFormat)
+          .onChange(async (value) => {
+            this.plugin.settings.frontmatter.valueFormat = value
             await this.plugin.saveSettings()
         })
       })

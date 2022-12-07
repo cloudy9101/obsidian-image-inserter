@@ -6,11 +6,14 @@ This plugin helps users easily search and insert images to editors from [Unsplas
 # Features
 
 - Search images from Unsplash (Will support more sources in the future)
-- Insert image locally (download it into your resource folder), or remotely (just insert the image url)
+- Insert image locally (download it into your resource folder), or remotely (only insert the image url)
 - Set default image size, support only width or width and height
 - Set preferred image orientation when searching
+- Insert image to frontmatter with customized key and value format
 
 # Usage
+
+### Insert image to current place
 
 [demo.webm](https://user-images.githubusercontent.com/5436425/194984473-506249c2-b3ed-4c3d-835b-494f43c7684a.webm)
 
@@ -23,7 +26,23 @@ When editing a note and want to insert an image from Unsplash:
 6. Click an image you'd like to insert.
 7. The image should be inserted into your note now.
 
-Tip: You can also set a hotkey for the "Image Inserter: Insert Unsplash Image" command which allows you activate the command without open command palette and search it. [Custom hotkeys](https://help.obsidian.md/Customization/Custom+hotkeys)
+### Insert image to frontmatter
+
+About [front matter](https://help.obsidian.md/Advanced+topics/YAML+front+matter).
+Some plugins or markdown driven site generators read from front matter as metadata and maybe extract the header image or cover image from the metadata.
+Our insert image to frontmatter feature should be useful in those cases.
+
+If you want to insert an image to frontmatter:
+1. Set the frontmatter key and value format in the plugin setting tab.
+2. Open a markdown file you want to edit
+3. Open command palette (⌘+P / Ctrl+P).
+4. Search the command "Image Inserter: Insert Unsplash Image in Frontmatter" and click.
+5. Search and click an image you want to insert in the opened modal.
+6. The image URL should be inserted into your file's frontmatter with the set key and value format.
+
+# Tip
+
+You can also set a hotkey for the "Image Inserter: Insert Unsplash Image" and "Image Inserter: Insert Unsplash Image in Frontmatter" command which allows you activate the command without open command palette and search it. [Custom hotkeys](https://help.obsidian.md/Customization/Custom+hotkeys)
 
 # Installation
 
@@ -45,6 +64,22 @@ The proxy server is necessary because Unsplash API requires a client ID when fet
 If you want to host the proxy server by yourself, please refer to the [proxy repo](https://github.com/cloudy9101/obsidian-image-inserter-proxy).
 After setup the proxy server, you can set the proxy server address on the plugin's settings tab.
 
+### Frontmatter value format
+
+You can set a customized value format for inserting in frontmatter.
+The default format will be "{image-url}".
+```
+# if the key is "image" and the value format is "{image-url}", it will be
+---
+image: "https://some-random-image-url.com"
+---
+
+# if the key is "banner" and the value format is "![[{image-url}]], it will be
+---
+banner: "![[https://some-random-image-url.com]]"
+---
+```
+
 # Development
 
 Clone the repository, run `npm install` to install the dependencies, and run `npm run dev` to compile the plugin and watch file changes.
@@ -52,6 +87,11 @@ Clone the repository, run `npm install` to install the dependencies, and run `np
 See https://github.com/obsidianmd/obsidian-api for Obsidian's API documentation.
 
 Issues and PRs welcome.
+
+# Thanks 
+
+[@javiavid](https://github.com/javiavid)
+[@vovech](https://github.com/vovech)
 
 # License
 
