@@ -70,7 +70,7 @@ export function getFetcher(settings: PluginSettings) {
       })
     },
     async touchDownloadLocation(url: string): Promise<void> {
-      await requestUrl({ url: url.replace("api.unsplash.com", proxyServer) })
+      await requestUrl({ url: url.replace("https://api.unsplash.com", proxyServer) })
     },
     async downloadImage(url: string): Promise<ArrayBuffer> {
       const res = await requestUrl({ url })
