@@ -1,7 +1,7 @@
 import { Editor, Plugin } from 'obsidian';
 
 import { SettingTab, PluginSettings, DEFAULT_SETTINGS } from './SettingTab';
-import { ModalWrapper } from './ModalWrapper';
+import { InsertPlace, ModalWrapper } from './ModalWrapper';
 
 export default class InsertUnsplashImage extends Plugin {
 	settings: PluginSettings;
@@ -15,6 +15,14 @@ export default class InsertUnsplashImage extends Plugin {
 			name: 'Insert Unsplash Image',
 			editorCallback: (editor: Editor) => {
         new ModalWrapper(this.app, editor, this.settings).open();
+			}
+		});
+
+		this.addCommand({
+			id: 'insert-in-frontmatter',
+			name: 'Insert Unsplash Image in Frontmatter',
+			editorCallback: (editor: Editor) => {
+        new ModalWrapper(this.app, editor, this.settings, InsertPlace.frontmatter).open();
 			}
 		});
 	}
