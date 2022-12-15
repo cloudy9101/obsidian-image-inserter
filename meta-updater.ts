@@ -12,7 +12,7 @@ export const upsert = async (app: App, file: TFile, key: string, value: string) 
 
   let keyExists = false
   const updatedFrontmatterLines = frontmatter.split("\n").map((line) => {
-    if (line.startsWith(key)) {
+    if (line.startsWith(`${key}:`)) {
       keyExists = true
       return `${key}: ${value}`
     }

@@ -91,6 +91,7 @@ Issues and PRs welcome.
 # Thanks 
 
 [@javiavid](https://github.com/javiavid)
+
 [@vovech](https://github.com/vovech)
 
 # License
