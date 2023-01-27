@@ -1,11 +1,11 @@
 # Obsidian Image Inserter
 
-This plugin helps users easily search and insert images to editors from [Unsplash](https://unsplash.com).
+This plugin helps users easily search and insert images to editors from [Unsplash](https://unsplash.com) or [Pixabay](https://pixabay.com).
 *Unsplash provides over 3 million free high-resolution images.*
 
 # Features
 
-- Search images from Unsplash (Will support more sources in the future)
+- Search images from Unsplash / Pixabay (Will support more sources in the future)
 - Insert image locally (download it into your resource folder), or remotely (only insert the image url)
 - Set default image size, support only width or width and height
 - Set preferred image orientation when searching
@@ -19,10 +19,10 @@ This plugin helps users easily search and insert images to editors from [Unsplas
 
 When editing a note and want to insert an image from Unsplash:
 1. Open command palette (⌘+P / Ctrl+P).
-2. Search the command "Image Inserter: Insert Unsplash Image".
+2. Search the command "Image Inserter: Insert Image".
 3. Click on the command, then a modal opened.
 4. Input some words describe image you'd like to insert, e.g. robot.
-5. Wait a second, there will show several images from Unsplash.
+5. Wait a second, there will show several images from Unsplash / Pixabay.
 6. Click an image you'd like to insert.
 7. The image should be inserted into your note now.
 
@@ -36,30 +36,33 @@ If you want to insert an image to frontmatter:
 1. Set the frontmatter key and value format in the plugin setting tab.
 2. Open a markdown file you want to edit
 3. Open command palette (⌘+P / Ctrl+P).
-4. Search the command "Image Inserter: Insert Unsplash Image in Frontmatter" and click.
+4. Search the command "Image Inserter: Insert Image in Frontmatter" and click.
 5. Search and click an image you want to insert in the opened modal.
 6. The image URL should be inserted into your file's frontmatter with the set key and value format.
 
 # Tip
 
-You can also set a hotkey for the "Image Inserter: Insert Unsplash Image" and "Image Inserter: Insert Unsplash Image in Frontmatter" command which allows you activate the command without open command palette and search it. [Custom hotkeys](https://help.obsidian.md/Customization/Custom+hotkeys)
+You can also set a hotkey for the "Image Inserter: Insert Image" and "Image Inserter: Insert Image in Frontmatter" command which allows you activate the command without open command palette and search it. [Custom hotkeys](https://help.obsidian.md/Customization/Custom+hotkeys)
 
 # Installation
+
+### From the Community Plugins list (Recommend)
+
+Search for "Image Inserter" in Obsidian's community plugins browser.
+Enable the plugin in your Obsidian settings (find "Image Inserter" under "Community plugins").
 
 ### Manually installing the plugin
 
 Copy over main.js, styles.css, manifest.json to your vault VaultFolder/.obsidian/plugins/insert-unsplash-image/.
 
-### From the Community Plugins list
-Search for "Image Inserter" in Obsidian's community plugins browser.
-Enable the plugin in your Obsidian settings (find "Image Inserter" under "Community plugins").
-
 # Notes
+
+### Unsplash API Proxy
 
 Between your editor and Unsplash API, there is an HTTP proxy that runs on my own server. This means all your search input will send to my own server first. Please don't use this plugin if you can't accept it.
 The proxy server is necessary because Unsplash API requires a client ID when fetching data from it and Unsplash requires the developer to keep it secret.
 
-### Self host proxy
+#### Self host proxy
 
 If you want to host the proxy server by yourself, please refer to the [proxy repo](https://github.com/cloudy9101/obsidian-image-inserter-proxy).
 After setup the proxy server, you can set the proxy server address on the plugin's settings tab.

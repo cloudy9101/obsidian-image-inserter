@@ -12,7 +12,7 @@ export default class InsertUnsplashImage extends Plugin {
 
 		this.addCommand({
 			id: 'insert',
-			name: 'Insert Unsplash Image',
+			name: 'Insert Image',
 			editorCallback: (editor: Editor) => {
         new ModalWrapper(this.app, editor, this.settings).open();
 			}
@@ -20,7 +20,7 @@ export default class InsertUnsplashImage extends Plugin {
 
 		this.addCommand({
 			id: 'insert-in-frontmatter',
-			name: 'Insert Unsplash Image in Frontmatter',
+			name: 'Insert Image in Frontmatter',
 			editorCallback: (editor: Editor) => {
         new ModalWrapper(this.app, editor, this.settings, InsertPlace.frontmatter).open();
 			}

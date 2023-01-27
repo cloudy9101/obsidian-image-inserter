@@ -13,26 +13,35 @@ export enum Orientation {
   squarish = 'squarish',
 }
 
+export enum ImageProvider {
+  unsplash = 'unsplash',
+  pixabay = 'pixabay',
+}
+
 export interface PluginSettings {
   insertMode: InsertMode
   orientation: Orientation
   insertSize: string
-  proxyServer: string
   frontmatter: {
     key: string
     valueFormat: string
   }
+  imageProvider: ImageProvider
+  proxyServer: string
+  pixabayApiKey: string
 }
 
 export const DEFAULT_SETTINGS = {
   insertMode: InsertMode.remote,
   orientation: Orientation.landscape,
   insertSize: "",
-  proxyServer: "",
   frontmatter: {
     key: "image",
     valueFormat: "{image-url}"
-  }
+  },
+  imageProvider: ImageProvider.unsplash,
+  proxyServer: "",
+  pixabayApiKey: "",
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -98,19 +107,6 @@ export class SettingTab extends PluginSettingTab {
       })
 
     new Setting(containerEl)
-      .setName("Proxy Server")
-      .setDesc("Use a self host proxy server. Leave it empty if you don't want host proxy server by yourself.")
-      .addText((text) => {
-        text
-          .setPlaceholder("https://self-host-proxy.com/")
-          .setValue(this.plugin.settings.proxyServer)
-          .onChange(async (value) => {
-            this.plugin.settings.proxyServer = value
-            await this.plugin.saveSettings()
-        })
-      })
-    
-    new Setting(containerEl)
       .setName("Insert to Frontmatter Key")
       .setDesc("The key used when insert to frontmatter.")
       .addText((text) => {
@@ -132,6 +128,48 @@ export class SettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.frontmatter.valueFormat)
           .onChange(async (value) => {
             this.plugin.settings.frontmatter.valueFormat = value
+            await this.plugin.saveSettings()
+        })
+      })
+
+    new Setting(containerEl)
+      .setName("Image Provider")
+      .addDropdown((dropdown) => {
+        dropdown.addOptions({
+          [ImageProvider.unsplash]: 'Unsplash',
+          [ImageProvider.pixabay]: 'Pixabay',
+        })
+        .setValue(this.plugin.settings.imageProvider)
+        .onChange(async (value: ImageProvider) => {
+          this.plugin.settings.imageProvider = value
+          await this.plugin.saveSettings()
+        })
+      })
+
+    containerEl.createEl("h2", { text: "Unsplash" })
+    new Setting(containerEl)
+      .setName("Proxy Server")
+      .setDesc("Use a self host proxy server. Leave it empty if you don't want host proxy server by yourself.")
+      .addText((text) => {
+        text
+          .setPlaceholder("https://self-host-proxy.com/")
+          .setValue(this.plugin.settings.proxyServer)
+          .onChange(async (value) => {
+            this.plugin.settings.proxyServer = value
+            await this.plugin.saveSettings()
+        })
+      })
+
+    containerEl.createEl("h2", { text: "Pixabay" })
+    new Setting(containerEl)
+      .setName("API key")
+      .setDesc("API key can be found on https://pixabay.com/api/docs/ after logging in.")
+      .addText((text) => {
+        text
+          .setPlaceholder("Your API key")
+          .setValue(this.plugin.settings.pixabayApiKey)
+          .onChange(async (value) => {
+            this.plugin.settings.pixabayApiKey = value
             await this.plugin.saveSettings()
         })
       })

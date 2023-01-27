@@ -104,6 +104,11 @@ If your plugin does not need CSS, delete this file.
   cursor: pointer;
 }
 
+.image-inserter-container .container .pixabay-logo {
+  text-align: right;
+  margin-top: 20px;
+}
+
 /* Loading Animation */
 .image-inserter-container .loading-container {
   display: flex;
