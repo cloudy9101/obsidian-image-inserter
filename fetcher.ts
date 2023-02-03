@@ -39,6 +39,10 @@ const APP_NAME = encodeURIComponent("Obsidian Image Inserter Plugin")
 const UTM = `utm_source=${APP_NAME}&utm_medium=referral`
 const PER_PAGE = "30"
 
+const randomImgName = () => {
+return `img-${moment().format("YYYYMMDDHHmmss")}`
+}
+
 export function getFetcher(settings: PluginSettings): Fetcher {
   const startPage = 1
   let curPage = startPage
@@ -91,7 +95,7 @@ export function getFetcher(settings: PluginSettings): Fetcher {
 
         // const imageSize = insertSize === "" ? (insertMode === InsertMode.remote ? "|1280" : "") : `|${insertSize}`
         const imageSize = insertSize === "" ? "" : `|${insertSize}`
-        let nameText = `![img-${moment().format("YYYYMMDDHHmmss")}${imageSize}]`
+        let nameText = `![${randomImgName()}${imageSize}]`
         let urlText = `(${url})`
 
         if (insertMode === InsertMode.local) {
@@ -177,7 +181,7 @@ export function getFetcher(settings: PluginSettings): Fetcher {
       const url = image.url
 
       const imageSize = insertSize === "" ? "" : `|${insertSize}`
-      let nameText = `![${image.desc?.slice(0, 10)}${imageSize}]`
+      let nameText = `![${image.desc || randomImgName()}${imageSize}]`
       let urlText = `(${url})`
       const referral = `\n*Photo by [${image.author?.name}](https://unsplash.com/@${image.author?.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
 
