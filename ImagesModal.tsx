@@ -58,6 +58,7 @@ const ImagesModal = ({ fetcher, onSelect }: { fetcher: ReturnType<typeof getFetc
     } else if (e.ctrlKey && e.key === "p") {
       setSelectedImage(prev => prev - 1 < 0 ? images.length - 1 : prev - 1)
     } else if (e.key === "Enter") {
+      e.preventDefault()
       onSelect(images[selectedImage])
     }
   }, [images, selectedImage])

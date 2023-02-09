@@ -25,10 +25,12 @@ export interface PluginSettings {
   frontmatter: {
     key: string
     valueFormat: string
+    appendReferral: boolean
   }
   imageProvider: ImageProvider
   proxyServer: string
   pixabayApiKey: string
+  insertBackLink: boolean
 }
 
 export const DEFAULT_SETTINGS = {
@@ -37,11 +39,13 @@ export const DEFAULT_SETTINGS = {
   insertSize: "",
   frontmatter: {
     key: "image",
-    valueFormat: "{image-url}"
+    valueFormat: "{image-url}",
+    appendReferral: false
   },
   imageProvider: ImageProvider.unsplash,
   proxyServer: "",
   pixabayApiKey: "",
+  insertBackLink: false,
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -107,6 +111,18 @@ export class SettingTab extends PluginSettingTab {
       })
 
     new Setting(containerEl)
+      .setName("Insert backlink")
+      .setDesc("Insert a backlink(image HTML location on Provider website) in front of the reference text, eg. Backlink | Photo by ...")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.settings.insertBackLink)
+        .onChange(async (value: boolean) => {
+          this.plugin.settings.insertBackLink = value
+          await this.plugin.saveSettings()
+        })
+      })
+
+    containerEl.createEl("h1", { text: "Frontmatter" })
+    new Setting(containerEl)
       .setName("Insert to Frontmatter Key")
       .setDesc("The key used when insert to frontmatter.")
       .addText((text) => {
@@ -133,7 +149,20 @@ export class SettingTab extends PluginSettingTab {
       })
 
     new Setting(containerEl)
-      .setName("Image Provider")
+      .setName("Append image referral at end of the file")
+      .setDesc("Will append image referral at end of the file if set to true")
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.plugin.settings.frontmatter.appendReferral)
+          .onChange(async (value) => {
+            this.plugin.settings.frontmatter.appendReferral = value
+            await this.plugin.saveSettings()
+        })
+      })
+
+    containerEl.createEl("h1", { text: "Image Provider" })
+    new Setting(containerEl)
+      .setName("Provider")
       .addDropdown((dropdown) => {
         dropdown.addOptions({
           [ImageProvider.unsplash]: 'Unsplash',
@@ -146,9 +175,8 @@ export class SettingTab extends PluginSettingTab {
         })
       })
 
-    containerEl.createEl("h2", { text: "Unsplash" })
     new Setting(containerEl)
-      .setName("Proxy Server")
+      .setName("Unsplash Proxy Server")
       .setDesc("Use a self host proxy server. Leave it empty if you don't want host proxy server by yourself.")
       .addText((text) => {
         text
@@ -160,9 +188,8 @@ export class SettingTab extends PluginSettingTab {
         })
       })
 
-    containerEl.createEl("h2", { text: "Pixabay" })
     new Setting(containerEl)
-      .setName("API key")
+      .setName("Pixabay API key")
       .setDesc("API key can be found on https://pixabay.com/api/docs/ after logging in.")
       .addText((text) => {
         text

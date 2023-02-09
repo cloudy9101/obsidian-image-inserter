@@ -58,11 +58,11 @@ export class ModalWrapper extends Modal {
         this.editor.replaceSelection(imageTag)
       }
       if (this.insertPlace === InsertPlace.frontmatter) {
-        const imageTag = await this.fetcher.downloadAndGetUri(item, this.createFile.bind(this))
+        const { url: imageTag, referral } = await this.fetcher.downloadAndGetUri(item, this.createFile.bind(this))
         const file = this.app.workspace.getActiveFile()
         if (file) {
           const updatedContent = await upsert(this.app, file, this.settings.frontmatter.key, `"${this.settings.frontmatter.valueFormat.replace("{image-url}", imageTag)}"`)
-          this.app.vault.modify(file, updatedContent)
+          await this.app.vault.modify(file, this.settings.frontmatter.appendReferral ? [updatedContent, referral].join("\n") : updatedContent)
         }
       }
 

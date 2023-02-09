@@ -9,10 +9,9 @@ export interface Image {
   thumb: string
   url: string
   downloadLocationUrl?: string
-  author?: {
-    name: string
-    username: string
-  }
+  pageUrl: string
+  username: string
+  userUrl: string
 }
 
 export interface Fetcher {
@@ -26,7 +25,7 @@ export interface Fetcher {
   touchDownloadLocation?: (url: string) => Promise<void>
   downloadImage: (url: string) => Promise<ArrayBuffer>,
   downloadAndInsertImage: (image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void) => Promise<string>,
-  downloadAndGetUri: (image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void) => Promise<string>,
+  downloadAndGetUri: (image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void) => Promise<{ url: string, referral: string }>,
 }
 
 const pixabayOrientationMapping = {
@@ -83,6 +82,9 @@ export function getFetcher(settings: PluginSettings): Fetcher {
           return {
             thumb: item.previewURL,
             url: item.webformatURL,
+            pageUrl: item.pageURL,
+            userUrl: `https://pixabay.com/users/${item.user}-${item.user_id}`,
+            username: item.user,
           }
         })
       },
@@ -93,10 +95,11 @@ export function getFetcher(settings: PluginSettings): Fetcher {
       async downloadAndInsertImage(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<string> {
         const url = image.url
 
-        // const imageSize = insertSize === "" ? (insertMode === InsertMode.remote ? "|1280" : "") : `|${insertSize}`
         const imageSize = insertSize === "" ? "" : `|${insertSize}`
         let nameText = `![${randomImgName()}${imageSize}]`
         let urlText = `(${url})`
+        const backlink = settings.insertBackLink && image.pageUrl ? `[Backlink](${image.pageUrl}) | ` : ''
+        const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pixabay](https://pixabay.com/)*\n`
 
         if (insertMode === InsertMode.local) {
           const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
@@ -107,20 +110,22 @@ export function getFetcher(settings: PluginSettings): Fetcher {
           urlText = ""
         }
 
-        return `${nameText}${urlText}`
+        return `${nameText}${urlText}${referral}`
       },
-      async downloadAndGetUri(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<string> {
+      async downloadAndGetUri(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<{ url: string, referral: string }> {
         const url = image.url
+        const backlink = settings.insertBackLink && image.pageUrl ? `[Backlink](${image.pageUrl}) | ` : ''
+        const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pixabay](https://pixabay.com/)*\n`
 
         if (insertMode === InsertMode.local) {
           const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
           const ext = "png"
           const arrayBuf = await this.downloadImage(url)
           createFile(imageName, ext, arrayBuf)
-          return `${imageName}.${ext}`
+          return { url: `${imageName}.${ext}`, referral }
         }
 
-        return url
+        return { url, referral }
       }
     }
   }
@@ -162,10 +167,9 @@ export function getFetcher(settings: PluginSettings): Fetcher {
           thumb: item.urls.thumb,
           url: item.urls.regular,
           downloadLocationUrl: item.links.download_location,
-          author: {
-            name: item.user.name,
-            username: item.user.username,
-          },
+          pageUrl: item.links.html,
+          username: item.user.name,
+          userUrl: `https://unsplash.com/@${item.user.username}?${UTM}`
         }
       })
     },
@@ -183,7 +187,8 @@ export function getFetcher(settings: PluginSettings): Fetcher {
       const imageSize = insertSize === "" ? "" : `|${insertSize}`
       let nameText = `![${image.desc || randomImgName()}${imageSize}]`
       let urlText = `(${url})`
-      const referral = `\n*Photo by [${image.author?.name}](https://unsplash.com/@${image.author?.username}?${UTM}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
+      const backlink = settings.insertBackLink && image.pageUrl ? `[Backlink](${image.pageUrl}) | ` : ''
+      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
 
       if (insertMode === InsertMode.local) {
         const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
@@ -196,19 +201,21 @@ export function getFetcher(settings: PluginSettings): Fetcher {
 
       return `${nameText}${urlText}${referral}`
     },
-    async downloadAndGetUri(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<string> {
+    async downloadAndGetUri(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<{ url: string, referral: string }> {
       this.touchDownloadLocation(image.downloadLocationUrl)
       const url = image.url
+      const backlink = settings.insertBackLink && image.pageUrl ? `[Backlink](${image.pageUrl}) | ` : ''
+      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
 
       if (insertMode === InsertMode.local) {
         const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
         const ext = "png"
         const arrayBuf = await this.downloadImage(url)
         createFile(imageName, ext, arrayBuf)
-        return `${imageName}.${ext}`
+        return { url: `${imageName}.${ext}`, referral }
       }
 
-      return url
+      return { url, referral }
     }
   }
 }
