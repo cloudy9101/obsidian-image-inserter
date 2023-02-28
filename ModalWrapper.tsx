@@ -4,7 +4,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client"
 
-import { getFetcher, Image } from "./fetcher"
+import { Fetcher, getFetcher, Image } from "./fetcher"
 import { ImagesModal } from "./ImagesModal"
 import { PluginSettings } from "./SettingTab"
 
@@ -28,11 +28,24 @@ export class ModalWrapper extends Modal {
     this.containerEl.addClass("image-inserter-container")
   }
 
+  onFetcherChange(fetcher: Fetcher) {
+    this.fetcher = fetcher
+  }
+
   async onOpen() {
     const { contentEl } = this
 
     const root = createRoot(contentEl)
-    root.render(<React.StrictMode><ImagesModal fetcher={this.fetcher} onSelect={this.onChooseSuggestion.bind(this)} /></React.StrictMode>)
+    root.render(
+      <React.StrictMode>
+        <ImagesModal
+          fetcher={this.fetcher}
+          onFetcherChange={this.onFetcherChange.bind(this)}
+          settings={this.settings}
+          onSelect={this.onChooseSuggestion.bind(this)}
+        />
+      </React.StrictMode>
+    )
   }
 
   onClose() {

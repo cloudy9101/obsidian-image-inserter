@@ -44,6 +44,13 @@ If you want to insert an image to frontmatter:
 
 You can also set a hotkey for the "Image Inserter: Insert Image" and "Image Inserter: Insert Image in Frontmatter" command which allows you activate the command without open command palette and search it. [Custom hotkeys](https://help.obsidian.md/Customization/Custom+hotkeys)
 
+## Key Bindings
+
+In the image searching modal, there's several convience shortcut key bindings.
+`Ctrl + n` -> select next image
+`Ctrl + p` -> select previous image
+`Ctrl + u` -> switch image provider
+
 # Installation
 
 ### From the Community Plugins list (Recommend)

@@ -21,6 +21,10 @@ If your plugin does not need CSS, delete this file.
   max-width: 100%;
 }
 
+.image-inserter-container .container .input-group {
+  display: flex;
+}
+
 .image-inserter-container .container .query-input {
   width: 100%;
   border: 0;
@@ -29,6 +33,10 @@ If your plugin does not need CSS, delete this file.
 
 .image-inserter-container .container .query-input:focus {
   box-shadow: none;
+}
+
+.image-inserter-container .container .provider-selector {
+  margin-left: 8px;
 }
 
 .image-inserter-container .container .scroll-area {

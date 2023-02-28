@@ -1,14 +1,22 @@
 import * as React from "react";
-import { getFetcher, Image } from 'fetcher'
+import { Fetcher, getFetcher, Image } from 'fetcher'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Notice } from "obsidian";
 
 import { debounce } from './utils'
 import Loading from "./Loading"
 import NoResult from "./NoResult"
-import { ImageProvider } from "SettingTab";
+import { ImageProvider, PluginSettings } from "SettingTab";
 
-const ImagesModal = ({ fetcher, onSelect }: { fetcher: ReturnType<typeof getFetcher>, onSelect: (image: Image) => void }) => {
+interface Props {
+  fetcher: Fetcher,
+  onFetcherChange: (fetcher: Fetcher) => void,
+  settings: PluginSettings,
+  onSelect: (image: Image) => void
+}
+
+const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSelect }: Props) => {
+  const [fetcher, setFetcher] = useState(defaultFetcher)
   const [query, setQuery] = useState("")
   const [images, setImages] = useState<Image[]>([])
   const ref = useRef<HTMLDivElement | null>(null)
@@ -29,16 +37,28 @@ const ImagesModal = ({ fetcher, onSelect }: { fetcher: ReturnType<typeof getFetc
     setLoading(false)
   }
 
-  const debouncedFetchImages = useCallback(debounce(fetchImages, 1000), [])
+  const debouncedFetchImages = useCallback(debounce(fetchImages, 1000), [fetcher])
 
-  const onQueryChange = useCallback(async (query: string) => {
+  const onQueryChange = async (query: string) => {
     setQuery(query)
     debouncedFetchImages(query)
-  }, [])
+  }
 
   const onInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setLoading(true)
     onQueryChange(e.target.value)
+  }
+
+  const onProviderChange = async (provider: ImageProvider) => {
+    setLoading(true)
+    const fetcher = getFetcher({...settings, imageProvider: provider})
+    setFetcher(fetcher)
+    onFetcherChange(fetcher)
+  }
+
+  const onProviderSelectorChange = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const provider = e.target.value as ImageProvider
+    onProviderChange(provider)
   }
 
   const onPrevBtnClick = () => {
@@ -57,11 +77,13 @@ const ImagesModal = ({ fetcher, onSelect }: { fetcher: ReturnType<typeof getFetc
       setSelectedImage(prev => prev + 1 >= images.length ? 0 : prev + 1)
     } else if (e.ctrlKey && e.key === "p") {
       setSelectedImage(prev => prev - 1 < 0 ? images.length - 1 : prev - 1)
+    } else if (e.ctrlKey && e.key === "u") {
+      onProviderChange(fetcher.imageProvider === ImageProvider.unsplash ? ImageProvider.pixabay : ImageProvider.unsplash)
     } else if (e.key === "Enter") {
       e.preventDefault()
       onSelect(images[selectedImage])
     }
-  }, [images, selectedImage])
+  }, [images, selectedImage, fetcher.imageProvider])
 
   useEffect(() => {
     const element = ref.current
@@ -83,11 +105,23 @@ const ImagesModal = ({ fetcher, onSelect }: { fetcher: ReturnType<typeof getFetc
     }
   }, [selectedImageRef.current])
 
+  useEffect(() => {
+    if (fetcher) {
+      onQueryChange(query)
+    }
+  }, [fetcher])
+
   const hasPagination = fetcher.hasPrevPage() || fetcher.hasNextPage()
 
   return (
     <div ref={ref} className="container">
-      <input autoFocus={true} value={query} onChange={onInputChange} className="query-input" />
+      <div className="input-group">
+        <input autoFocus={true} value={query} onChange={onInputChange} className="query-input" />
+        <select value={fetcher.imageProvider} onChange={onProviderSelectorChange} className="provider-selector">
+          <option value={ImageProvider.unsplash}>Unsplash</option>
+          <option value={ImageProvider.pixabay}>Pixabay</option>
+        </select>
+      </div>
       {loading && <Loading />}
       {query !== "" && !loading && fetcher.noResult() && <NoResult />}
       <div className={`scroll-area${ loading ? " loading" : "" }`}>
@@ -132,7 +166,7 @@ const ImagesModal = ({ fetcher, onSelect }: { fetcher: ReturnType<typeof getFetc
                   <rect height="500" width="500" y="-175.07" x="507.43" fill="#222"/>
                   <g fill="#FFF" transform="matrix(2.7777778,0,0,2.7777778,-2096.4989,0.29221019)">
                     <path d="m993.33-7.7954c-2.671,0-4.8365-2.1665-4.8365-4.8392h-16.569c0,2.6727-2.1651,4.8392-4.8363,4.8392h-4.4254v51.484h84.798v-51.483h-54.065zm-4.83,15.24h-16.571v-7.2076h16.569v7.2076zm29.124,28.522c-9.8169,0-17.804-7.9906-17.804-17.813,0-9.8226,7.987-17.402,17.804-17.402,9.8171,0,17.804,7.5795,17.804,17.402,0,9.8226-7.9865,17.813-17.804,17.813zm9.571-17.813c0,5.28-4.2937,9.576-9.5707,9.576-5.2772,0-9.5708-4.2963-9.5708-9.576,0-5.2806,4.2936-9.576,9.5708-9.576,5.277,0,9.5707,4.2957,9.5707,9.576zm66.262-29.941-21.421,55.346-17.241-6.6808v-9.4327l12.218,4.7345,15.073-38.942-56.483-21.887-5.2351,13.525h-9.426l9.6383-24.901,72.876,28.239z"/>
-                    <g font-family="VomZom" font-size="27.43096924px" line-height="125%" font-stretch="normal" font-variant="normal" font-weight="normal" font-style="normal">
+                    <g fontFamily="VomZom" fontSize="27.43096924px" line-height="125%" fontStretch="normal" fontVariant="normal" fontWeight="normal" fontStyle="normal">
                       <path d="m972.14,64.921c-2.7039,0.06735-4.9506,0.99582-6.7402,2.7854s-2.7181,4.0364-2.7854,6.7402v17.223h3.7847v-7.6545h5.7409c2.7056-0.0691,4.9595-1.0047,6.7615-2.8067s2.7375-4.0558,2.8067-6.7615c-0.0691-2.7039-1.0047-4.9506-2.8067-6.7402s-4.0558-2.718-6.7615-2.7854zm-5.7409,15.309,0-5.7834c0.0399-1.6346,0.59801-2.99,1.6744-4.0665,1.0764-1.0764,2.4319-1.6345,4.0665-1.6744,1.6549,0.03988,3.0228,0.59802,4.1037,1.6744,1.0808,1.0764,1.6407,2.4319,1.6797,4.0665-0.039,1.6549-0.59891,3.0228-1.6797,4.1037-1.0809,1.0809-2.4488,1.6408-4.1037,1.6797z"/>
                       <path d="m984.13,83.93,3.7422,0,0-19.094-3.7422,0z"/>
                       <path d="m1004.9,83.973-4.9073-6.2277-4.4076,6.2277-5.282,0,7.3341-9.7788-6.7452-9.3327,5.1214,0,4.0329,5.8352,4.4968-5.8352,5.0857,0-7.3341,9.3327,8.0122,9.7788z"/>

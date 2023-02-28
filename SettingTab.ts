@@ -162,7 +162,7 @@ export class SettingTab extends PluginSettingTab {
 
     containerEl.createEl("h1", { text: "Image Provider" })
     new Setting(containerEl)
-      .setName("Provider")
+      .setName("Default Provider")
       .addDropdown((dropdown) => {
         dropdown.addOptions({
           [ImageProvider.unsplash]: 'Unsplash',
