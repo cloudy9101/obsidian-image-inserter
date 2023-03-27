@@ -1,15 +1,20 @@
 # Obsidian Image Inserter
 
-This plugin helps users easily search and insert images to editors from [Unsplash](https://unsplash.com) or [Pixabay](https://pixabay.com).
-*Unsplash provides over 3 million free high-resolution images.*
+This plugin helps users easily search and insert images to editors from one or more image sources.
 
 # Features
 
-- Search images from Unsplash / Pixabay (Will support more sources in the future)
+- Search images from Unsplash / Pixabay / Pexels (Will support more sources in the future)
 - Insert image locally (download it into your resource folder), or remotely (only insert the image url)
 - Set default image size, support only width or width and height
 - Set preferred image orientation when searching
 - Insert image to frontmatter with customized key and value format
+
+# Support Image Sources
+
+- [Unsplash](https://unsplash.com) Unsplash provides over 3 million free high-resolution images.
+- [Pixabay](https://pixabay.com) Over 2.8 million+ high quality stock images, videos and music shared by our talented community.
+- [Pexels](https://pexels.com) The best free stock photos, royalty free images & videos shared by creators.
 
 # Usage
 
@@ -22,7 +27,7 @@ When editing a note and want to insert an image from Unsplash:
 2. Search the command "Image Inserter: Insert Image".
 3. Click on the command, then a modal opened.
 4. Input some words describe image you'd like to insert, e.g. robot.
-5. Wait a second, there will show several images from Unsplash / Pixabay.
+5. Wait a second, there will show several images from Unsplash / Pixabay / Pexels.
 6. Click an image you'd like to insert.
 7. The image should be inserted into your note now.
 
