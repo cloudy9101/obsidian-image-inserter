@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Fetcher, getFetcher, Image } from 'fetcher'
+import { availableFetchers, getFetcher } from 'fetchers'
+import { Fetcher, Image, providerMapping } from 'fetchers/constants'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Notice } from "obsidian";
 
@@ -22,6 +23,7 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
   const ref = useRef<HTMLDivElement | null>(null)
   const selectedImageRef = useRef<HTMLDivElement | null>(null)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [error, setError] = useState()
 
   const [loading, setLoading] = useState(false)
 
@@ -31,6 +33,7 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
       setImages(images)
       setSelectedImage(0)
     } catch (e) {
+      setError(e.message)
       console.error(e)
       new Notice('Something went wrong, please contact the plugin author.')
     }
@@ -46,11 +49,13 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
 
   const onInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setLoading(true)
+    setError(undefined)
     onQueryChange(e.target.value)
   }
 
   const onProviderChange = async (provider: ImageProvider) => {
     setLoading(true)
+    setError(undefined)
     const fetcher = getFetcher({...settings, imageProvider: provider})
     setFetcher(fetcher)
     onFetcherChange(fetcher)
@@ -118,12 +123,14 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
       <div className="input-group">
         <input autoFocus={true} value={query} onChange={onInputChange} className="query-input" />
         <select value={fetcher.imageProvider} onChange={onProviderSelectorChange} className="provider-selector">
-          <option value={ImageProvider.unsplash}>Unsplash</option>
-          <option value={ImageProvider.pixabay}>Pixabay</option>
+          <option value={ImageProvider.unsplash}>{providerMapping[ImageProvider.unsplash]}</option>
+          <option value={ImageProvider.pixabay}>{providerMapping[ImageProvider.pixabay]}</option>
+          <option value={ImageProvider.pexels}>{providerMapping[ImageProvider.pexels]}</option>
         </select>
       </div>
       {loading && <Loading />}
       {query !== "" && !loading && fetcher.noResult() && <NoResult />}
+      {error}
       <div className={`scroll-area${ loading ? " loading" : "" }`}>
         <div className="images-list">
           {images.map((image, index) => (
@@ -134,7 +141,7 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
               className={`query-result${selectedImage === index ? " is-selected" : ""}`}
               ref={index === selectedImage ? selectedImageRef : null}
             >
-              <img key={image.url} src={image.url} />
+              <img key={image.url} src={image.thumb} />
             </div>
           ))}
         </div>

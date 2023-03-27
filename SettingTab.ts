@@ -1,5 +1,6 @@
 import InsertUpsplashImagePlugin from "./main";
 import { App, PluginSettingTab, Setting } from "obsidian";
+import { providerMapping } from "fetchers/constants";
 
 export enum InsertMode {
   remote = 'remote',
@@ -16,6 +17,7 @@ export enum Orientation {
 export enum ImageProvider {
   unsplash = 'unsplash',
   pixabay = 'pixabay',
+  pexels = 'pexels',
 }
 
 export interface PluginSettings {
@@ -31,6 +33,7 @@ export interface PluginSettings {
   proxyServer: string
   pixabayApiKey: string
   insertBackLink: boolean
+  pexelsApiKey: string
 }
 
 export const DEFAULT_SETTINGS = {
@@ -46,6 +49,7 @@ export const DEFAULT_SETTINGS = {
   proxyServer: "",
   pixabayApiKey: "",
   insertBackLink: false,
+  pexelsApiKey: "",
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -165,8 +169,9 @@ export class SettingTab extends PluginSettingTab {
       .setName("Default Provider")
       .addDropdown((dropdown) => {
         dropdown.addOptions({
-          [ImageProvider.unsplash]: 'Unsplash',
-          [ImageProvider.pixabay]: 'Pixabay',
+          [ImageProvider.unsplash]: providerMapping[ImageProvider.unsplash],
+          [ImageProvider.pixabay]: providerMapping[ImageProvider.pixabay],
+          [ImageProvider.pexels]: providerMapping[ImageProvider.pexels],
         })
         .setValue(this.plugin.settings.imageProvider)
         .onChange(async (value: ImageProvider) => {
@@ -197,6 +202,19 @@ export class SettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.pixabayApiKey)
           .onChange(async (value) => {
             this.plugin.settings.pixabayApiKey = value
+            await this.plugin.saveSettings()
+        })
+      })
+
+    new Setting(containerEl)
+      .setName("Pexels API key")
+      .setDesc("API key can be created on https://www.pexels.com/api/new/ after logging in.")
+      .addText((text) => {
+        text
+          .setPlaceholder("Your API key")
+          .setValue(this.plugin.settings.pexelsApiKey)
+          .onChange(async (value) => {
+            this.plugin.settings.pexelsApiKey = value
             await this.plugin.saveSettings()
         })
       })

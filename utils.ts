@@ -1,3 +1,5 @@
+import { moment } from 'obsidian'
+
 export function debounce(fn: (query: string) => Promise<void>, delay: number): (query: string) => void {
   let timer: ReturnType<typeof setTimeout>;
 
@@ -17,3 +19,8 @@ export function validUrl(url: string) {
     return false; 
   }
 }
+
+export const randomImgName = () => {
+  return `img-${moment().format("YYYYMMDDHHmmss")}`
+}
+
