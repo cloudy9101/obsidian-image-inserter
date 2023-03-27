@@ -12,7 +12,7 @@ export const unsplash = (settings: PluginSettings) => {
   let curPage = startPage
   let totalPage = 0
 
-  const { orientation, insertMode, insertSize, imageProvider } = settings
+  const { orientation, insertMode, insertSize, imageProvider, useMarkdownLinks } = settings
 
   let proxyServer = DEFAULT_PROXY_SERVER
   if (validUrl(settings.proxyServer)) {
@@ -83,7 +83,7 @@ export const unsplash = (settings: PluginSettings) => {
         const ext = "png"
         const arrayBuf = await this.downloadImage(url)
         createFile(imageName, ext, arrayBuf)
-        nameText = `![[${imageName}.${ext}${imageSize}]]`
+        nameText = useMarkdownLinks ? `![${insertSize}](${encodeURIComponent(imageName)}.${ext})` : `![[${imageName}.${ext}${imageSize}]]`
         urlText = ""
       }
 
