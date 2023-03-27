@@ -1,5 +1,5 @@
 import * as React from "react";
-import { availableFetchers, getFetcher } from 'fetchers'
+import { getFetcher } from 'fetchers'
 import { Fetcher, Image, providerMapping } from 'fetchers/constants'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Notice } from "obsidian";

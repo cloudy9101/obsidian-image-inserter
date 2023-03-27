@@ -4,7 +4,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client"
 
-import { Fetcher, getFetcher, Image } from "./fetchers"
+import { getFetcher } from "./fetchers"
+import { Fetcher, Image } from "./fetchers/constants"
 import { ImagesModal } from "./ImagesModal"
 import { PluginSettings } from "./SettingTab"
 
