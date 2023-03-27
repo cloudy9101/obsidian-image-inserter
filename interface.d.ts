@@ -9,6 +9,7 @@ declare module 'obsidian' {
     ) => Promise<string>;
     config: {
       attachmentFolderPath: string;
+      useMarkdownLinks: boolean;
     };
   }
 }

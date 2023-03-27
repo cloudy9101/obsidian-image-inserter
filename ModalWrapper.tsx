@@ -24,7 +24,7 @@ export class ModalWrapper extends Modal {
     super(app)
     this.editor = editor
     this.fetcher = getFetcher(settings)
-    this.settings = settings
+    this.settings = { ...settings, useMarkdownLinks: app.vault.config.useMarkdownLinks }
     this.insertPlace = insertPlace
     this.containerEl.addClass("image-inserter-container")
   }

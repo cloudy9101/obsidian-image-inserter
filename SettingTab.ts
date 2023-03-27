@@ -34,6 +34,7 @@ export interface PluginSettings {
   pixabayApiKey: string
   insertBackLink: boolean
   pexelsApiKey: string
+  useMarkdownLinks: boolean
 }
 
 export const DEFAULT_SETTINGS = {

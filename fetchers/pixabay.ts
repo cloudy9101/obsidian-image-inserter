@@ -15,7 +15,7 @@ export const pixabay = (settings: PluginSettings) => {
   let curPage = startPage
   let totalPage = 0
 
-  const { orientation, insertMode, insertSize, imageProvider, pixabayApiKey } = settings
+  const { orientation, insertMode, insertSize, imageProvider, pixabayApiKey, useMarkdownLinks } = settings
 
   return {
     imageProvider,
@@ -76,7 +76,7 @@ export const pixabay = (settings: PluginSettings) => {
         const ext = "png"
         const arrayBuf = await this.downloadImage(url)
         createFile(imageName, ext, arrayBuf)
-        nameText = `![[${imageName}.${ext}${imageSize}]]`
+        nameText = useMarkdownLinks ? `![${insertSize}](${encodeURIComponent(imageName)}.${ext})` : `![[${imageName}.${ext}${imageSize}]]`
         urlText = ""
       }
 
