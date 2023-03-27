@@ -1,7 +1,7 @@
 {
 	"id": "insert-unsplash-image",
 	"name": "Image Inserter",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"minAppVersion": "0.15.0",
 	"description": "This plugin helps users easily search and insert images to editors from Unsplash / Pixabay.",
 	"author": "Ray Hao",
