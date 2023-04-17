@@ -53,7 +53,7 @@ export const unsplash = (settings: PluginSettings) => {
         return {
           desc: item.description || item.alt_description,
           thumb: item.urls.thumb,
-          url: item.urls.regular,
+          url: item.urls.raw,
           downloadLocationUrl: item.links.download_location,
           pageUrl: item.links.html,
           username: item.user.name,
