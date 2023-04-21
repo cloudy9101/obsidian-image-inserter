@@ -6,6 +6,7 @@ This plugin helps users easily search and insert images to editors from one or m
 
 - Search images from Unsplash / Pixabay / Pexels (Will support more sources in the future)
 - Insert image locally (download it into your resource folder), or remotely (only insert the image url)
+- Insert image with preferred quality
 - Set default image size, support only width or width and height
 - Set preferred image orientation when searching
 - Insert image to frontmatter with customized key and value format
@@ -55,6 +56,7 @@ In the image searching modal, there's several convience shortcut key bindings.
 `Ctrl + n` -> select next image
 `Ctrl + p` -> select previous image
 `Ctrl + u` -> switch image provider
+`Ctrl + i` -> switch image quality
 
 # Installation
 
@@ -105,9 +107,12 @@ Issues and PRs welcome.
 
 # Thanks 
 
-[@javiavid](https://github.com/javiavid)
-
-[@vovech](https://github.com/vovech)
+- [@javiavid](https://github.com/javiavid)
+- [@vovech](https://github.com/vovech)
+- [@engage-results](https://github.com/engage-results)
+- [@Bluemoondragon07](https://github.com/Bluemoondragon07)
+- [@mxro](https://github.com/mxro)
+- [@Explosion-Scratch](https://github.com/Explosion-Scratch)
 
 # License
 
