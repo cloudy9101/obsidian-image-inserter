@@ -1,13 +1,13 @@
 import * as React from "react";
 import { getFetcher } from 'fetchers'
-import { Fetcher, Image, providerMapping } from 'fetchers/constants'
+import { Fetcher, Image, imageProviders, imageQualities, providerMapping } from 'fetchers/constants'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Notice } from "obsidian";
 
 import { debounce } from './utils'
 import Loading from "./Loading"
 import NoResult from "./NoResult"
-import { ImageProvider, PluginSettings } from "SettingTab";
+import { ImageProvider, ImageQuality, PluginSettings } from "SettingTab";
 
 interface Props {
   fetcher: Fetcher,
@@ -56,14 +56,27 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
   const onProviderChange = async (provider: ImageProvider) => {
     setLoading(true)
     setError(undefined)
-    const fetcher = getFetcher({...settings, imageProvider: provider})
-    setFetcher(fetcher)
-    onFetcherChange(fetcher)
+    const newFetcher = getFetcher({...settings, imageProvider: provider, imageQuality: fetcher.imageQuality})
+    setFetcher(newFetcher)
+    onFetcherChange(newFetcher)
   }
 
   const onProviderSelectorChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     const provider = e.target.value as ImageProvider
-    onProviderChange(provider)
+    await onProviderChange(provider)
+  }
+
+  const onImageQualityChange = async (quality: ImageQuality) => {
+    setLoading(true)
+    setError(undefined)
+    const newFetcher = getFetcher({...settings, imageQuality: quality, imageProvider: fetcher.imageProvider})
+    setFetcher(newFetcher)
+    onFetcherChange(newFetcher)
+  }
+
+  const onImageQualitySelectorChange = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const quality = e.target.value as ImageQuality
+    await onImageQualityChange(quality)
   }
 
   const onPrevBtnClick = () => {
@@ -83,7 +96,17 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
     } else if (e.ctrlKey && e.key === "p") {
       setSelectedImage(prev => prev - 1 < 0 ? images.length - 1 : prev - 1)
     } else if (e.ctrlKey && e.key === "u") {
-      onProviderChange(fetcher.imageProvider === ImageProvider.unsplash ? ImageProvider.pixabay : ImageProvider.unsplash)
+      let index = imageProviders.indexOf(fetcher.imageProvider) + 1
+      if (index >= imageProviders.length) {
+        index = 0
+      }
+      onProviderChange(imageProviders[index])
+    } else if (e.ctrlKey && e.key === "i") {
+      let index = imageQualities.indexOf(fetcher.imageQuality) + 1
+      if (index >= imageQualities.length) {
+        index = 0
+      }
+      onImageQualityChange(imageQualities[index])
     } else if (e.key === "Enter") {
       e.preventDefault()
       onSelect(images[selectedImage])
@@ -122,10 +145,15 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
     <div ref={ref} className="container">
       <div className="input-group">
         <input autoFocus={true} value={query} onChange={onInputChange} className="query-input" />
-        <select value={fetcher.imageProvider} onChange={onProviderSelectorChange} className="provider-selector">
-          <option value={ImageProvider.unsplash}>{providerMapping[ImageProvider.unsplash]}</option>
-          <option value={ImageProvider.pixabay}>{providerMapping[ImageProvider.pixabay]}</option>
-          <option value={ImageProvider.pexels}>{providerMapping[ImageProvider.pexels]}</option>
+        <select value={fetcher.imageProvider} onChange={onProviderSelectorChange} className="selector">
+          {imageProviders.map((provider) => (
+            <option key={provider} value={provider}>{providerMapping[provider]}</option>
+          ))}
+        </select>
+        <select value={fetcher.imageQuality} onChange={onImageQualitySelectorChange} className="selector">
+          {imageQualities.map((quality) => (
+            <option key={quality} value={quality}>{quality}</option>
+          ))}
         </select>
       </div>
       {loading && <Loading />}

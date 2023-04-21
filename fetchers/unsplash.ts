@@ -1,5 +1,5 @@
 import { requestUrl, moment } from "obsidian";
-import { InsertMode, PluginSettings } from "SettingTab";
+import { ImageQuality, InsertMode, PluginSettings } from "SettingTab";
 import { randomImgName, validUrl } from "utils";
 import { PER_PAGE, Image } from "./constants";
 
@@ -7,12 +7,19 @@ const DEFAULT_PROXY_SERVER = "https://insert-unsplash-image.cloudy9101.com/"
 const APP_NAME = encodeURIComponent("Obsidian Image Inserter Plugin")
 const UTM = `utm_source=${APP_NAME}&utm_medium=referral`
 
+const imageQualityMapping: Record<ImageQuality, keyof Unsplash.Urls> = {
+  [ImageQuality.raw]: 'raw',
+  [ImageQuality.high]: 'regular',
+  [ImageQuality.medium]: 'small',
+  [ImageQuality.low]: 'thumb',
+}
+
 export const unsplash = (settings: PluginSettings) => {
   const startPage = 1
   let curPage = startPage
   let totalPage = 0
 
-  const { orientation, insertMode, insertSize, imageProvider, useMarkdownLinks } = settings
+  const { orientation, insertMode, insertSize, imageQuality, imageProvider, useMarkdownLinks } = settings
 
   let proxyServer = DEFAULT_PROXY_SERVER
   if (validUrl(settings.proxyServer)) {
@@ -21,6 +28,7 @@ export const unsplash = (settings: PluginSettings) => {
 
   return {
     imageProvider,
+    imageQuality,
     noResult() { return totalPage <= 0 },
     hasPrevPage() {
       return !this.noResult() && curPage > startPage
@@ -49,14 +57,11 @@ export const unsplash = (settings: PluginSettings) => {
       const res = await requestUrl({ url: url.toString() })
       const data: Unsplash.RootObject = res.json
       totalPage = data.total_pages
-      if (!/^(?!0\d)\d+(x(?!0\d)\d+)?$/.matches(imageSize)){
-        throw new Error(`[SIZE_INVALID] Image size ${JSON.stringify(imageSize)} is invalid. Supported format is WIDTHxHEIGHT or just WIDTH`);
-      }
       return data.results.map(function(item) {
         return {
           desc: item.description || item.alt_description,
           thumb: item.urls.thumb,
-          url: `https://source.unsplash.com/${item.id}/${imageSize}`,
+          url: item.urls[imageQualityMapping[imageQuality]],
           downloadLocationUrl: item.links.download_location,
           pageUrl: item.links.html,
           username: item.user.name,

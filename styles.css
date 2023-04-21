@@ -26,16 +26,10 @@ If your plugin does not need CSS, delete this file.
 }
 
 .image-inserter-container .container .query-input {
-  width: 100%;
-  border: 0;
-  border-radius: 6px;
+  flex-grow: 1;
 }
 
-.image-inserter-container .container .query-input:focus {
-  box-shadow: none;
-}
-
-.image-inserter-container .container .provider-selector {
+.image-inserter-container .container .selector {
   margin-left: 8px;
 }
 

@@ -20,10 +20,18 @@ export enum ImageProvider {
   pexels = 'pexels',
 }
 
+export enum ImageQuality {
+  raw = 'raw',
+  high = 'high',
+  medium = 'medium',
+  low = 'low',
+}
+
 export interface PluginSettings {
   insertMode: InsertMode
   orientation: Orientation
   insertSize: string
+  imageQuality: ImageQuality
   frontmatter: {
     key: string
     valueFormat: string
@@ -41,6 +49,7 @@ export const DEFAULT_SETTINGS = {
   insertMode: InsertMode.remote,
   orientation: Orientation.landscape,
   insertSize: "",
+  ImageQuality: ImageQuality.high,
   frontmatter: {
     key: "image",
     valueFormat: "{image-url}",
@@ -112,6 +121,23 @@ export class SettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.insertSize = value
             await this.plugin.saveSettings()
+        })
+      })
+
+    new Setting(containerEl)
+      .setName("Default Image Quality")
+      .setDesc("Set the default preferred image quality from image providers")
+      .addDropdown((dropdown) => {
+        dropdown.addOptions({
+          [ImageQuality.raw]: ImageQuality.raw,
+          [ImageQuality.high]: ImageQuality.high,
+          [ImageQuality.medium]: ImageQuality.medium,
+          [ImageQuality.low]: ImageQuality.low,
+        })
+        .setValue(this.plugin.settings.imageQuality)
+        .onChange(async (value: ImageQuality) => {
+          this.plugin.settings.imageQuality = value
+          await this.plugin.saveSettings()
         })
       })
 

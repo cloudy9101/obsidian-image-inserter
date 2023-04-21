@@ -1,5 +1,5 @@
 import { moment, requestUrl } from "obsidian";
-import { InsertMode, Orientation, PluginSettings } from "SettingTab";
+import { ImageQuality, InsertMode, Orientation, PluginSettings } from "SettingTab";
 import { randomImgName } from "utils";
 import { PER_PAGE, Image } from "./constants";
 
@@ -10,15 +10,31 @@ const orientationMapping = {
   [Orientation.notSpecified]: '',
 }
 
+const getImageUrl = (item: Pixabay.Hit, quality: ImageQuality) => {
+  switch (quality) {
+    case ImageQuality.raw:
+      return item.imageURL || item.fullHDURL || item.largeImageURL
+    case ImageQuality.high:
+      return item.fullHDURL || item.largeImageURL
+    case ImageQuality.medium:
+      return item.webformatURL
+    case ImageQuality.low:
+      return item.previewURL
+    default:
+      return item.webformatURL
+  }
+}
+
 export const pixabay = (settings: PluginSettings) => {
   const startPage = 1
   let curPage = startPage
   let totalPage = 0
 
-  const { orientation, insertMode, insertSize, imageProvider, pixabayApiKey, useMarkdownLinks } = settings
+  const { orientation, insertMode, insertSize, imageQuality, imageProvider, pixabayApiKey, useMarkdownLinks } = settings
 
   return {
     imageProvider,
+    imageQuality,
     noResult() { return totalPage <= 0 },
     hasPrevPage() {
       return !this.noResult() && curPage > startPage
@@ -51,7 +67,7 @@ export const pixabay = (settings: PluginSettings) => {
       return data.hits.map(function(item) {
         return {
           thumb: item.previewURL,
-          url: item.webformatURL,
+          url: getImageUrl(item, imageQuality),
           pageUrl: item.pageURL,
           userUrl: `https://pixabay.com/users/${item.user}-${item.user_id}`,
           username: item.user,
