@@ -49,7 +49,7 @@ export const DEFAULT_SETTINGS = {
   insertMode: InsertMode.remote,
   orientation: Orientation.landscape,
   insertSize: "",
-  ImageQuality: ImageQuality.high,
+  imageQuality: ImageQuality.high,
   frontmatter: {
     key: "image",
     valueFormat: "{image-url}",

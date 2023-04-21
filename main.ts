@@ -1,6 +1,6 @@
 import { Editor, Plugin } from 'obsidian';
 
-import { SettingTab, PluginSettings, DEFAULT_SETTINGS, ImageProvider } from './SettingTab';
+import { SettingTab, PluginSettings, DEFAULT_SETTINGS } from './SettingTab';
 import { InsertPlace, ModalWrapper } from './ModalWrapper';
 
 export default class InsertUnsplashImage extends Plugin {
