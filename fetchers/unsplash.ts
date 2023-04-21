@@ -49,11 +49,14 @@ export const unsplash = (settings: PluginSettings) => {
       const res = await requestUrl({ url: url.toString() })
       const data: Unsplash.RootObject = res.json
       totalPage = data.total_pages
+      if (!/^(?!0\d)\d+(x(?!0\d)\d+)?$/.matches(imageSize)){
+        throw new Error(`[SIZE_INVALID] Image size ${JSON.stringify(imageSize)} is invalid. Supported format is WIDTHxHEIGHT or just WIDTH`);
+      }
       return data.results.map(function(item) {
         return {
           desc: item.description || item.alt_description,
           thumb: item.urls.thumb,
-          url: item.urls.regular,
+          url: `https://source.unsplash.com/${item.id}/${imageSize}`,
           downloadLocationUrl: item.links.download_location,
           pageUrl: item.links.html,
           username: item.user.name,
