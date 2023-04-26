@@ -1,6 +1,6 @@
 import InsertUpsplashImagePlugin from "./main";
 import { App, PluginSettingTab, Setting } from "obsidian";
-import { providerMapping } from "fetchers/constants";
+import { imageSizesMapping, providerMapping } from "fetchers/constants";
 
 export enum InsertMode {
   remote = 'remote',
@@ -20,18 +20,18 @@ export enum ImageProvider {
   pexels = 'pexels',
 }
 
-export enum ImageQuality {
+export enum ImageSize {
   raw = 'raw',
-  high = 'high',
+  large = 'large',
   medium = 'medium',
-  low = 'low',
+  small = 'small',
 }
 
 export interface PluginSettings {
   insertMode: InsertMode
   orientation: Orientation
   insertSize: string
-  imageQuality: ImageQuality
+  imageSize: ImageSize
   frontmatter: {
     key: string
     valueFormat: string
@@ -49,7 +49,7 @@ export const DEFAULT_SETTINGS = {
   insertMode: InsertMode.remote,
   orientation: Orientation.landscape,
   insertSize: "",
-  imageQuality: ImageQuality.high,
+  imageSize: ImageSize.large,
   frontmatter: {
     key: "image",
     valueFormat: "{image-url}",
@@ -125,18 +125,18 @@ export class SettingTab extends PluginSettingTab {
       })
 
     new Setting(containerEl)
-      .setName("Default Image Quality")
-      .setDesc("Set the default preferred image quality from image providers")
+      .setName("Default Image Size")
+      .setDesc("Set the default preferred image size from image providers")
       .addDropdown((dropdown) => {
         dropdown.addOptions({
-          [ImageQuality.raw]: ImageQuality.raw,
-          [ImageQuality.high]: ImageQuality.high,
-          [ImageQuality.medium]: ImageQuality.medium,
-          [ImageQuality.low]: ImageQuality.low,
+          [ImageSize.raw]: imageSizesMapping[ImageSize.raw],
+          [ImageSize.large]: imageSizesMapping[ImageSize.large],
+          [ImageSize.medium]: imageSizesMapping[ImageSize.medium],
+          [ImageSize.small]: imageSizesMapping[ImageSize.large],
         })
-        .setValue(this.plugin.settings.imageQuality)
-        .onChange(async (value: ImageQuality) => {
-          this.plugin.settings.imageQuality = value
+        .setValue(this.plugin.settings.imageSize)
+        .onChange(async (value: ImageSize) => {
+          this.plugin.settings.imageSize = value
           await this.plugin.saveSettings()
         })
       })

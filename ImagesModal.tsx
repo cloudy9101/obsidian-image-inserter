@@ -1,13 +1,13 @@
 import * as React from "react";
 import { getFetcher } from 'fetchers'
-import { Fetcher, Image, imageProviders, imageQualities, providerMapping } from 'fetchers/constants'
+import { Fetcher, Image, imageProviders, imageSizes, imageSizesMapping, providerMapping } from 'fetchers/constants'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Notice } from "obsidian";
 
 import { debounce } from './utils'
 import Loading from "./Loading"
 import NoResult from "./NoResult"
-import { ImageProvider, ImageQuality, PluginSettings } from "SettingTab";
+import { ImageProvider, ImageSize, PluginSettings } from "SettingTab";
 
 interface Props {
   fetcher: Fetcher,
@@ -56,7 +56,7 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
   const onProviderChange = async (provider: ImageProvider) => {
     setLoading(true)
     setError(undefined)
-    const newFetcher = getFetcher({...settings, imageProvider: provider, imageQuality: fetcher.imageQuality})
+    const newFetcher = getFetcher({...settings, imageProvider: provider, imageSize: fetcher.imageSize})
     setFetcher(newFetcher)
     onFetcherChange(newFetcher)
   }
@@ -66,17 +66,17 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
     await onProviderChange(provider)
   }
 
-  const onImageQualityChange = async (quality: ImageQuality) => {
+  const onImageSizeChange = async (quality: ImageSize) => {
     setLoading(true)
     setError(undefined)
-    const newFetcher = getFetcher({...settings, imageQuality: quality, imageProvider: fetcher.imageProvider})
+    const newFetcher = getFetcher({...settings, imageSize: quality, imageProvider: fetcher.imageProvider})
     setFetcher(newFetcher)
     onFetcherChange(newFetcher)
   }
 
-  const onImageQualitySelectorChange = async (e: ChangeEvent<HTMLSelectElement>) => {
-    const quality = e.target.value as ImageQuality
-    await onImageQualityChange(quality)
+  const onImageSizeSelectorChange = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const quality = e.target.value as ImageSize
+    await onImageSizeChange(quality)
   }
 
   const onPrevBtnClick = () => {
@@ -102,11 +102,11 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
       }
       onProviderChange(imageProviders[index])
     } else if (e.ctrlKey && e.key === "i") {
-      let index = imageQualities.indexOf(fetcher.imageQuality) + 1
-      if (index >= imageQualities.length) {
+      let index = imageSizes.indexOf(fetcher.imageSize) + 1
+      if (index >= imageSizes.length) {
         index = 0
       }
-      onImageQualityChange(imageQualities[index])
+      onImageSizeChange(imageSizes[index])
     } else if (e.key === "Enter") {
       e.preventDefault()
       onSelect(images[selectedImage])
@@ -150,9 +150,9 @@ const ImagesModal = ({ fetcher: defaultFetcher, onFetcherChange, settings, onSel
             <option key={provider} value={provider}>{providerMapping[provider]}</option>
           ))}
         </select>
-        <select value={fetcher.imageQuality} onChange={onImageQualitySelectorChange} className="selector">
-          {imageQualities.map((quality) => (
-            <option key={quality} value={quality}>{quality}</option>
+        <select value={fetcher.imageSize} onChange={onImageSizeSelectorChange} className="selector">
+          {imageSizes.map((size) => (
+            <option key={size} value={size}>{imageSizesMapping[size]}</option>
           ))}
         </select>
       </div>

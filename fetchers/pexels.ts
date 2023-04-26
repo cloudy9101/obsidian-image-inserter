@@ -1,5 +1,5 @@
 import { requestUrl, moment } from "obsidian";
-import { ImageQuality, InsertMode, Orientation, PluginSettings } from "SettingTab";
+import { ImageSize, InsertMode, Orientation, PluginSettings } from "SettingTab";
 import { randomImgName } from "utils";
 import { PER_PAGE, Image } from "./constants";
 
@@ -10,11 +10,11 @@ const orientationMapping = {
   [Orientation.notSpecified]: '',
 }
 
-const imageQualityMapping: Record<ImageQuality, keyof Pexels.Src> = {
-  [ImageQuality.raw]: 'original',
-  [ImageQuality.high]: 'large',
-  [ImageQuality.medium]: 'medium',
-  [ImageQuality.low]: 'small',
+const imageSizeMapping: Record<ImageSize, keyof Pexels.Src> = {
+  [ImageSize.raw]: 'original',
+  [ImageSize.large]: 'large',
+  [ImageSize.medium]: 'medium',
+  [ImageSize.small]: 'small',
 }
 
 export const pexels = (settings: PluginSettings) => {
@@ -22,11 +22,11 @@ export const pexels = (settings: PluginSettings) => {
   let curPage = startPage
   let totalPage = 0
 
-  const { orientation, insertMode, insertSize, imageQuality, imageProvider, pexelsApiKey, useMarkdownLinks } = settings
+  const { orientation, insertMode, insertSize, imageSize, imageProvider, pexelsApiKey, useMarkdownLinks } = settings
 
   return {
     imageProvider,
-    imageQuality,
+    imageSize,
     noResult() { return totalPage <= 0 },
     hasPrevPage() {
       return !this.noResult() && curPage > startPage
@@ -61,7 +61,7 @@ export const pexels = (settings: PluginSettings) => {
       return data.photos.map(function(item) {
         return {
           thumb: item.src.small,
-          url: item.src[imageQualityMapping[imageQuality]],
+          url: item.src[imageSizeMapping[imageSize]],
           pageUrl: item.url,
           userUrl: item.photographer_url,
           username: item.photographer,

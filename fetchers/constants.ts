@@ -1,4 +1,4 @@
-import { ImageProvider, ImageQuality } from "SettingTab"
+import { ImageProvider, ImageSize } from "SettingTab"
 
 export const APP_NAME = encodeURIComponent("Obsidian Image Inserter Plugin")
 export const UTM = `utm_source=${APP_NAME}&utm_medium=referral`
@@ -16,12 +16,19 @@ export const imageProviders = [
   ImageProvider.pexels,
 ]
 
-export const imageQualities = [
-  ImageQuality.raw,
-  ImageQuality.high,
-  ImageQuality.medium,
-  ImageQuality.low,
+export const imageSizes = [
+  ImageSize.raw,
+  ImageSize.large,
+  ImageSize.medium,
+  ImageSize.small,
 ]
+
+export const imageSizesMapping = {
+  [ImageSize.raw]: 'Raw',
+  [ImageSize.large]: 'Large',
+  [ImageSize.medium]: 'Medium',
+  [ImageSize.small]: 'Small',
+}
 
 export interface Image {
   desc?: string
@@ -35,7 +42,7 @@ export interface Image {
 
 export interface Fetcher {
   imageProvider: ImageProvider,
-  imageQuality: ImageQuality,
+  imageSize: ImageSize,
   noResult: () => boolean,
   hasPrevPage: () => boolean,
   hasNextPage: () => boolean,

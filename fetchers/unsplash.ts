@@ -1,5 +1,5 @@
 import { requestUrl, moment } from "obsidian";
-import { ImageQuality, InsertMode, PluginSettings } from "SettingTab";
+import { ImageSize, InsertMode, PluginSettings } from "SettingTab";
 import { randomImgName, validUrl } from "utils";
 import { PER_PAGE, Image } from "./constants";
 
@@ -7,11 +7,11 @@ const DEFAULT_PROXY_SERVER = "https://insert-unsplash-image.cloudy9101.com/"
 const APP_NAME = encodeURIComponent("Obsidian Image Inserter Plugin")
 const UTM = `utm_source=${APP_NAME}&utm_medium=referral`
 
-const imageQualityMapping: Record<ImageQuality, keyof Unsplash.Urls> = {
-  [ImageQuality.raw]: 'raw',
-  [ImageQuality.high]: 'regular',
-  [ImageQuality.medium]: 'small',
-  [ImageQuality.low]: 'thumb',
+const imageSizeMapping: Record<ImageSize, keyof Unsplash.Urls> = {
+  [ImageSize.raw]: 'raw',
+  [ImageSize.large]: 'regular',
+  [ImageSize.medium]: 'small',
+  [ImageSize.small]: 'thumb',
 }
 
 export const unsplash = (settings: PluginSettings) => {
@@ -19,7 +19,7 @@ export const unsplash = (settings: PluginSettings) => {
   let curPage = startPage
   let totalPage = 0
 
-  const { orientation, insertMode, insertSize, imageQuality, imageProvider, useMarkdownLinks } = settings
+  const { orientation, insertMode, insertSize, imageSize, imageProvider, useMarkdownLinks } = settings
 
   let proxyServer = DEFAULT_PROXY_SERVER
   if (validUrl(settings.proxyServer)) {
@@ -28,7 +28,7 @@ export const unsplash = (settings: PluginSettings) => {
 
   return {
     imageProvider,
-    imageQuality,
+    imageSize,
     noResult() { return totalPage <= 0 },
     hasPrevPage() {
       return !this.noResult() && curPage > startPage
@@ -61,7 +61,7 @@ export const unsplash = (settings: PluginSettings) => {
         return {
           desc: item.description || item.alt_description,
           thumb: item.urls.thumb,
-          url: item.urls[imageQualityMapping[imageQuality]],
+          url: item.urls[imageSizeMapping[imageSize]],
           downloadLocationUrl: item.links.download_location,
           pageUrl: item.links.html,
           username: item.user.name,
