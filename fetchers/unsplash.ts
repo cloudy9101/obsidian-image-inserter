@@ -59,7 +59,7 @@ export const unsplash = (settings: PluginSettings) => {
       totalPage = data.total_pages
       return data.results.map(function(item) {
         return {
-          desc: item.description || item.alt_description,
+          desc: (item.description || item.alt_description || '').replace(new RegExp(/\n/g), " "),
           thumb: item.urls.thumb,
           url: item.urls[imageSizeMapping[imageSize]],
           downloadLocationUrl: item.links.download_location,
