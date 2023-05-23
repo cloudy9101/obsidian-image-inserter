@@ -77,7 +77,7 @@ export class SettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Insert Mode")
-      .setDesc("Should the image be insert remotely(with Unsplash url) or locally(download into attachments folder).")
+      .setDesc("Should the image be insert remotely (with Unsplash url) or locally (download into attachments folder).")
       .addDropdown((dropdown) =>
         dropdown
           .addOption(InsertMode.remote, 'Remote')
@@ -114,7 +114,7 @@ export class SettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Insert Size")
-      .setDesc("Set the size of the image when inserting. Format could be only width \"200\" or width and height \"200x100\".")
+      .setDesc("Set the size of the image when inserting. Format could be only the width \"200\" or the width and height \"200x100\".")
       .addText((text) => {
         text
           .setValue(this.plugin.settings.insertSize)
@@ -126,7 +126,7 @@ export class SettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Default Image Size")
-      .setDesc("Set the default preferred image size from image providers")
+      .setDesc("Set the default preferred image size from image providers.")
       .addDropdown((dropdown) => {
         dropdown.addOptions({
           [ImageSize.raw]: imageSizesMapping[ImageSize.raw],
@@ -143,7 +143,7 @@ export class SettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Insert backlink")
-      .setDesc("Insert a backlink(image HTML location on Provider website) in front of the reference text, eg. Backlink | Photo by ...")
+      .setDesc("Insert a backlink (image HTML location on Provider website) in front of the reference text, eg. Backlink | Photo by ...")
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.settings.insertBackLink)
         .onChange(async (value: boolean) => {
@@ -180,7 +180,7 @@ export class SettingTab extends PluginSettingTab {
       })
 
     new Setting(containerEl)
-      .setName("Append image referral at end of the file")
+      .setName("Append image referral at end of the file.")
       .setDesc("Will append image referral at end of the file if set to true")
       .addToggle((toggle) => {
         toggle
