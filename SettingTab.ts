@@ -132,7 +132,7 @@ export class SettingTab extends PluginSettingTab {
           [ImageSize.raw]: imageSizesMapping[ImageSize.raw],
           [ImageSize.large]: imageSizesMapping[ImageSize.large],
           [ImageSize.medium]: imageSizesMapping[ImageSize.medium],
-          [ImageSize.small]: imageSizesMapping[ImageSize.large],
+          [ImageSize.small]: imageSizesMapping[ImageSize.small],
         })
         .setValue(this.plugin.settings.imageSize)
         .onChange(async (value: ImageSize) => {
