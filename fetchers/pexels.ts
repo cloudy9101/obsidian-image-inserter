@@ -1,111 +1,136 @@
-import { requestUrl, moment } from "obsidian";
+import { requestUrl, moment, Vault } from "obsidian";
 import { ImageSize, InsertMode, Orientation, PluginSettings } from "SettingTab";
 import { randomImgName } from "utils";
 import { PER_PAGE, Image } from "./constants";
 
 const orientationMapping = {
-  [Orientation.landscape]: 'landscape',
-  [Orientation.portrait]: 'portrait',
-  [Orientation.squarish]: 'square',
-  [Orientation.notSpecified]: '',
-}
+  [Orientation.landscape]: "landscape",
+  [Orientation.portrait]: "portrait",
+  [Orientation.squarish]: "square",
+  [Orientation.notSpecified]: "",
+};
 
 const imageSizeMapping: Record<ImageSize, keyof Pexels.Src> = {
-  [ImageSize.raw]: 'original',
-  [ImageSize.large]: 'large',
-  [ImageSize.medium]: 'medium',
-  [ImageSize.small]: 'small',
-}
+  [ImageSize.raw]: "original",
+  [ImageSize.large]: "large",
+  [ImageSize.medium]: "medium",
+  [ImageSize.small]: "small",
+};
 
-export const pexels = (settings: PluginSettings) => {
-  const startPage = 1
-  let curPage = startPage
-  let totalPage = 0
+export const pexels = (settings: PluginSettings, vault: Vault) => {
+  const startPage = 1;
+  let curPage = startPage;
+  let totalPage = 0;
 
-  const { orientation, insertMode, insertSize, imageSize, imageProvider, pexelsApiKey, useMarkdownLinks } = settings
+  const {
+    orientation,
+    insertMode,
+    insertSize,
+    imageSize,
+    imageProvider,
+    pexelsApiKey,
+    useMarkdownLinks,
+  } = settings;
 
   return {
+    vault,
     imageProvider,
     imageSize,
-    noResult() { return totalPage <= 0 },
+    noResult() {
+      return totalPage <= 0;
+    },
     hasPrevPage() {
-      return !this.noResult() && curPage > startPage
+      return !this.noResult() && curPage > startPage;
     },
     hasNextPage() {
-      return !this.noResult() && curPage < totalPage
+      return !this.noResult() && curPage < totalPage;
     },
     prevPage() {
-      this.hasPrevPage() && (curPage -= 1)
+      this.hasPrevPage() && (curPage -= 1);
     },
     nextPage() {
-      this.hasNextPage() && (curPage += 1)
+      this.hasNextPage() && (curPage += 1);
     },
     async searchImages(query: string): Promise<Image[]> {
       if (!query || query === "") {
-        return []
+        return [];
       }
 
-      const url = new URL("https://api.pexels.com/v1/search")
-      url.searchParams.set("query", query)
-      if (orientation != 'not_specified') {
-        url.searchParams.set("orientation", orientationMapping[orientation])
+      const url = new URL("https://api.pexels.com/v1/search");
+      url.searchParams.set("query", query);
+      if (orientation != "not_specified") {
+        url.searchParams.set("orientation", orientationMapping[orientation]);
       }
-      url.searchParams.set("page", `${curPage}`)
-      url.searchParams.set("per_page", PER_PAGE)
+      url.searchParams.set("page", `${curPage}`);
+      url.searchParams.set("per_page", PER_PAGE);
       const res = await requestUrl({
         url: url.toString(),
         headers: { Authorization: pexelsApiKey },
-      })
-      const data: Pexels.RootObject = res.json
-      totalPage = data.total_results / parseInt(PER_PAGE)
-      return data.photos.map(function(item) {
+      });
+      const data: Pexels.RootObject = res.json;
+      totalPage = data.total_results / parseInt(PER_PAGE);
+      return data.photos.map(function (item) {
         return {
           thumb: item.src.small,
           url: item.src[imageSizeMapping[imageSize]],
           pageUrl: item.url,
           userUrl: item.photographer_url,
           username: item.photographer,
-        }
-      })
+        };
+      });
     },
     async downloadImage(url: string): Promise<ArrayBuffer> {
-      const res = await requestUrl({ url })
-      return res.arrayBuffer
+      const res = await requestUrl({ url });
+      return res.arrayBuffer;
     },
-    async downloadAndInsertImage(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<string> {
-      const url = image.url
+    async downloadAndInsertImage(
+      image: Image,
+      createFile: (name: string, ext: string, binary: ArrayBuffer) => void,
+    ): Promise<string> {
+      const url = image.url;
 
-      const imageSize = insertSize === "" ? "" : `|${insertSize}`
-      let nameText = `![${randomImgName()}${imageSize}]`
-      let urlText = `(${url})`
-      const backlink = settings.insertBackLink && image.pageUrl ? `[Backlink](${image.pageUrl}) | ` : ''
-      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pexels](https://pexels.com/)*\n`
+      const imageSize = insertSize === "" ? "" : `|${insertSize}`;
+      let nameText = `![${randomImgName()}${imageSize}]`;
+      let urlText = `(${url})`;
+      const backlink =
+        settings.insertBackLink && image.pageUrl
+          ? `[Backlink](${image.pageUrl}) | `
+          : "";
+      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pexels](https://pexels.com/)*\n`;
 
       if (insertMode === InsertMode.local) {
-        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
-        const ext = "png"
-        const arrayBuf = await this.downloadImage(url)
-        createFile(imageName, ext, arrayBuf)
-        nameText = useMarkdownLinks ? `![${insertSize}](${encodeURIComponent(imageName)}.${ext})` : `![[${imageName}.${ext}${imageSize}]]`
-        urlText = ""
+        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`;
+        const ext = "png";
+        const arrayBuf = await this.downloadImage(url);
+        createFile(imageName, ext, arrayBuf);
+        nameText = useMarkdownLinks
+          ? `![${insertSize}](${encodeURIComponent(imageName)}.${ext})`
+          : `![[${imageName}.${ext}${imageSize}]]`;
+        urlText = "";
       }
 
-      return `${nameText}${urlText}${referral}`
+      return `${nameText}${urlText}${referral}`;
     },
-    async downloadAndGetUri(image: Image, createFile: (name: string, ext: string, binary: ArrayBuffer) => void): Promise<{ url: string, referral: string }> {
-      const url = image.url
-      const backlink = settings.insertBackLink && image.pageUrl ? `[Backlink](${image.pageUrl}) | ` : ''
-      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pixabay](https://pixabay.com/)*\n`
+    async downloadAndGetUri(
+      image: Image,
+      createFile: (name: string, ext: string, binary: ArrayBuffer) => void,
+    ): Promise<{ url: string; referral: string }> {
+      const url = image.url;
+      const backlink =
+        settings.insertBackLink && image.pageUrl
+          ? `[Backlink](${image.pageUrl}) | `
+          : "";
+      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pixabay](https://pixabay.com/)*\n`;
 
       if (insertMode === InsertMode.local) {
-        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`
-        const ext = "png"
-        const arrayBuf = await this.downloadImage(url)
-        createFile(imageName, ext, arrayBuf)
-        return { url: `${imageName}.${ext}`, referral }
+        const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`;
+        const ext = "png";
+        const arrayBuf = await this.downloadImage(url);
+        createFile(imageName, ext, arrayBuf);
+        return { url: `${imageName}.${ext}`, referral };
       }
 
-      return { url, referral }
-    }
-  }
-}
+      return { url, referral };
+    },
+  };
+};
