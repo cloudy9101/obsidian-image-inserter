@@ -44,7 +44,7 @@ export interface Image {
 }
 
 export interface Fetcher {
-  vault?: Vault;
+  vault: Vault;
   imageProvider: ImageProvider;
   imageSize: ImageSize;
   noResult: () => boolean;
