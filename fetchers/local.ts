@@ -70,7 +70,6 @@ export const local = (settings: PluginSettings, vault: Vault) => {
       image: Image,
       _: (name: string, ext: string, binary: ArrayBuffer) => void,
     ): Promise<{ url: string; referral: string }> {
-      this.touchDownloadLocation(image.downloadLocationUrl);
       const url = image.url;
 
       return { url, referral: "" };
