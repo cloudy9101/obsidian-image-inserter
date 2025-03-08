@@ -105,7 +105,9 @@ export const unsplash = (settings: PluginSettings, vault: Vault) => {
         settings.insertBackLink && image.pageUrl
           ? `[Backlink](${image.pageUrl}) | `
           : "";
-      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Unsplash](https://unsplash.com/?${UTM})*\n`;
+      const referral = settings.insertReferral
+        ? `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
+        : "";
 
       if (insertMode === InsertMode.local) {
         const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`;
@@ -130,7 +132,9 @@ export const unsplash = (settings: PluginSettings, vault: Vault) => {
         settings.insertBackLink && image.pageUrl
           ? `[Backlink](${image.pageUrl}) | `
           : "";
-      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Unsplash](https://unsplash.com/?${UTM})*\n`;
+      const referral = settings.insertReferral
+        ? `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Unsplash](https://unsplash.com/?${UTM})*\n`
+        : "";
 
       if (insertMode === InsertMode.local) {
         const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`;

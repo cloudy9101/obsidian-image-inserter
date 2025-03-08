@@ -44,6 +44,7 @@ export interface PluginSettings {
   insertBackLink: boolean;
   pexelsApiKey: string;
   useMarkdownLinks: boolean;
+  insertReferral: boolean;
 }
 
 export const DEFAULT_SETTINGS = {
@@ -61,6 +62,7 @@ export const DEFAULT_SETTINGS = {
   pixabayApiKey: "",
   insertBackLink: false,
   pexelsApiKey: "",
+  insertReferral: true,
 };
 
 export class SettingTab extends PluginSettingTab {
@@ -145,6 +147,18 @@ export class SettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.imageSize)
           .onChange(async (value: ImageSize) => {
             this.plugin.settings.imageSize = value;
+            await this.plugin.saveSettings();
+          });
+      });
+
+    new Setting(containerEl)
+      .setName("Insert referral")
+      .setDesc("Insert the reference text, eg. Photo by ...")
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.plugin.settings.insertReferral)
+          .onChange(async (value: boolean) => {
+            this.plugin.settings.insertReferral = value;
             await this.plugin.saveSettings();
           });
       });
