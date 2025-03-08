@@ -96,7 +96,9 @@ export const pexels = (settings: PluginSettings, vault: Vault) => {
         settings.insertBackLink && image.pageUrl
           ? `[Backlink](${image.pageUrl}) | `
           : "";
-      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pexels](https://pexels.com/)*\n`;
+      const referral = settings.insertReferral
+        ? `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pexels](https://pexels.com/)*\n`
+        : "";
 
       if (insertMode === InsertMode.local) {
         const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`;
@@ -120,7 +122,9 @@ export const pexels = (settings: PluginSettings, vault: Vault) => {
         settings.insertBackLink && image.pageUrl
           ? `[Backlink](${image.pageUrl}) | `
           : "";
-      const referral = `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pixabay](https://pixabay.com/)*\n`;
+      const referral = settings.insertReferral
+        ? `\n*${backlink}Photo by [${image.username}](${image.userUrl}) on [Pixabay](https://pixabay.com/)*\n`
+        : "";
 
       if (insertMode === InsertMode.local) {
         const imageName = `Inserted image ${moment().format("YYYYMMDDHHmmss")}`;
