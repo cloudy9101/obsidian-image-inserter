@@ -51,6 +51,9 @@ export const local = (settings: PluginSettings, vault: Vault) => {
           };
         });
     },
+    async randomImage(_: string): Promise<Image[]> {
+      return []
+    },
     async downloadImage(_: string): Promise<ArrayBuffer> {
       return new ArrayBuffer(0);
     },

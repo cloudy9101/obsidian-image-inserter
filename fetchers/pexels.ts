@@ -79,6 +79,9 @@ export const pexels = (settings: PluginSettings, vault: Vault) => {
         };
       });
     },
+    async randomImage(_: string): Promise<Image[]> {
+      return []
+    },
     async downloadImage(url: string): Promise<ArrayBuffer> {
       const res = await requestUrl({ url });
       return res.arrayBuffer;

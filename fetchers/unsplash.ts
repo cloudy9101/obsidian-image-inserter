@@ -82,6 +82,27 @@ export const unsplash = (settings: PluginSettings, vault: Vault) => {
         };
       });
     },
+    async randomImage(query: string): Promise<Image[]> {
+      const url = new URL("/photos/random", proxyServer);
+      url.searchParams.set("query", query);
+      if (orientation != "not_specified") {
+        url.searchParams.set("orientation", orientation);
+      }
+      const res = await requestUrl({ url: url.toString() });
+      const item: Unsplash.Photo = res.json;
+      return [{
+        desc: (item.description || item.alt_description || "").replace(
+          new RegExp(/\n/g),
+          " ",
+        ),
+        thumb: item.urls.thumb,
+        url: item.urls[imageSizeMapping[imageSize]],
+        downloadLocationUrl: item.links.download_location,
+        pageUrl: item.links.html,
+        username: item.user.name,
+        userUrl: `https://unsplash.com/@${item.user.username}?${UTM}`,
+      }];
+    },
     async touchDownloadLocation(url: string): Promise<void> {
       await requestUrl({
         url: url.replace("https://api.unsplash.com", proxyServer),

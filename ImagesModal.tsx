@@ -20,6 +20,7 @@ interface Props {
   fetcher: Fetcher;
   onFetcherChange: (fetcher: Fetcher) => void;
   settings: PluginSettings;
+  random: boolean;
   onSelect: (image: Image) => void;
 }
 
@@ -27,6 +28,7 @@ const ImagesModal = ({
   fetcher: defaultFetcher,
   onFetcherChange,
   settings,
+  random,
   onSelect,
 }: Props) => {
   const [fetcher, setFetcher] = useState(defaultFetcher);
@@ -39,9 +41,12 @@ const ImagesModal = ({
 
   const [loading, setLoading] = useState(false);
 
+  const filteredImageProviders = random ? [ImageProvider.unsplash] : imageProviders
+
   const fetchImages = async (query: string) => {
     try {
-      const images = await fetcher.searchImages(query);
+      const fetchFunc = random ? fetcher.randomImage : fetcher.searchImages
+      const images = await fetchFunc(query);
       setImages(images);
       setSelectedImage(0);
     } catch (e) {
@@ -127,11 +132,11 @@ const ImagesModal = ({
           prev - 1 < 0 ? images.length - 1 : prev - 1,
         );
       } else if (e.ctrlKey && e.key === "u") {
-        let index = imageProviders.indexOf(fetcher.imageProvider) + 1;
-        if (index >= imageProviders.length) {
+        let index = filteredImageProviders.indexOf(fetcher.imageProvider) + 1;
+        if (index >= filteredImageProviders.length) {
           index = 0;
         }
-        onProviderChange(imageProviders[index]);
+        onProviderChange(filteredImageProviders[index]);
       } else if (e.ctrlKey && e.key === "i") {
         let index = imageSizes.indexOf(fetcher.imageSize) + 1;
         if (index >= imageSizes.length) {
@@ -188,7 +193,7 @@ const ImagesModal = ({
           onChange={onProviderSelectorChange}
           className="selector"
         >
-          {imageProviders.map((provider) => (
+          {filteredImageProviders.map((provider) => (
             <option key={provider} value={provider}>
               {providerMapping[provider]}
             </option>

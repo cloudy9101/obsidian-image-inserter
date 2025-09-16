@@ -7,7 +7,7 @@ import { createRoot } from "react-dom/client";
 import { getFetcher } from "./fetchers";
 import { Fetcher, Image } from "./fetchers/constants";
 import { ImagesModal } from "./ImagesModal";
-import { PluginSettings } from "./SettingTab";
+import { ImageProvider, PluginSettings } from "./SettingTab";
 
 export enum InsertPlace {
   default = "default",
@@ -19,12 +19,14 @@ export class ModalWrapper extends Modal {
   fetcher: ReturnType<typeof getFetcher>;
   settings: PluginSettings;
   insertPlace: InsertPlace;
+  random: boolean;
 
   constructor(
     app: App,
     editor: Editor,
     settings: PluginSettings,
     insertPlace: InsertPlace = InsertPlace.default,
+    random = false,
   ) {
     super(app);
     this.editor = editor;
@@ -32,8 +34,9 @@ export class ModalWrapper extends Modal {
       ...settings,
       useMarkdownLinks: app.vault.config.useMarkdownLinks,
     };
-    this.fetcher = getFetcher(this.settings, app.vault);
+    this.fetcher = getFetcher({ ...this.settings, imageProvider: random ? ImageProvider.unsplash : this.settings.imageProvider }, app.vault);
     this.insertPlace = insertPlace;
+    this.random = random
     this.containerEl.addClass("image-inserter-container");
   }
 
@@ -51,6 +54,7 @@ export class ModalWrapper extends Modal {
           fetcher={this.fetcher}
           onFetcherChange={this.onFetcherChange.bind(this)}
           settings={this.settings}
+          random={this.random}
           onSelect={this.onChooseSuggestion.bind(this)}
         />
       </React.StrictMode>,

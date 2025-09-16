@@ -25,6 +25,22 @@ export default class InsertUnsplashImage extends Plugin {
         new ModalWrapper(this.app, editor, this.settings, InsertPlace.frontmatter).open();
 			}
 		});
+
+    this.addCommand({
+      id: 'insert-random',
+      name: 'Insert random image (only support Unsplash)',
+      editorCallback: (editor: Editor) => {
+        new ModalWrapper(this.app, editor, this.settings, InsertPlace.default, true).open();
+      }
+    });
+
+    this.addCommand({
+      id: 'insert-random-in-frontmatter',
+      name: 'Insert random image in frontmatter (only support Unsplash)',
+      editorCallback: (editor: Editor) => {
+        new ModalWrapper(this.app, editor, this.settings, InsertPlace.frontmatter, true).open();
+      }
+    });
 	}
 
 	onunload() {}

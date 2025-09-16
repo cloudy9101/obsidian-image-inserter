@@ -53,6 +53,7 @@ export interface Fetcher {
   prevPage: () => void;
   nextPage: () => void;
   searchImages: (query: string) => Promise<Image[]>;
+  randomImage: (query: string) => Promise<Image[]>;
   touchDownloadLocation?: (url: string) => Promise<void>;
   downloadImage: (url: string) => Promise<ArrayBuffer>;
   downloadAndInsertImage: (
